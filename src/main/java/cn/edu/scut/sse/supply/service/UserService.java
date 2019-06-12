@@ -58,12 +58,12 @@ public class UserService {
         }
         User user = userDAO.getUserByName(username);
         if (user == null) {
-            result.setCode(-2);
+            result.setCode(-1);
             result.setMsg("用户不存在或密码错误");
             return result;
         }
         if (!user.getPassword().equals(password)) {
-            result.setCode(-2);
+            result.setCode(-1);
             result.setMsg("密码错误");
             return result;
         }
@@ -81,7 +81,7 @@ public class UserService {
             return result;
         }
         if (userDAO.getUserByName(username) != null) {
-            result.setCode(-3);
+            result.setCode(-2);
             result.setMsg("用户已存在");
             return result;
         }
@@ -107,7 +107,7 @@ public class UserService {
         }
         User user = userDAO.getUserByName(username);
         if (user == null) {
-            result.setCode(-2);
+            result.setCode(-3);
             result.setMsg("用户名不存在");
             return result;
         }
