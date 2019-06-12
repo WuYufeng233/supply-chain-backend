@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="supply-chain-backend:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>supply-chain-backend</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="supply-chain-backend.war">
+      <element id="artifact" artifact-name="supply-chain-backend:war exploded" />
+    </root>
+  </artifact>
+</component>
