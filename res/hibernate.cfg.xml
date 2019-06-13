@@ -21,6 +21,8 @@
         <!-- 配置hibernate的映射文件所在的位置 -->
         <mapping resource="User.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.User"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.Enterprise"/>
+        <mapping resource="Enterprise.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

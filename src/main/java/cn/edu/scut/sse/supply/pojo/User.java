@@ -15,6 +15,7 @@ public class User {
     private String username;
     private String password;
     private String token;
+    private Integer type;
 
     @Id
     @Column(name = "uid", nullable = false)
@@ -27,7 +28,7 @@ public class User {
     }
 
     @Basic
-    @Column(name = "username", nullable = false, length = 50)
+    @Column(name = "username", nullable = false, length = 64)
     public String getUsername() {
         return username;
     }
@@ -37,7 +38,7 @@ public class User {
     }
 
     @Basic
-    @Column(name = "password", nullable = false, length = 50)
+    @Column(name = "password", nullable = false, length = 64)
     public String getPassword() {
         return password;
     }
@@ -78,5 +79,15 @@ public class User {
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (token != null ? token.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "type", nullable = false)
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

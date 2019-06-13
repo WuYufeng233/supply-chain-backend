@@ -49,7 +49,7 @@ public class UserDAO {
         return user;
     }
 
-    public User getUserByName(String username) {
+    public User getUserByName(String username, int type) {
         SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactoryInstance();
         Session session = sessionFactory.openSession();
 
@@ -57,7 +57,8 @@ public class UserDAO {
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> root = criteriaQuery.from(User.class);
         criteriaQuery.select(root);
-        criteriaQuery.where(criteriaBuilder.equal(root.get("username"), username));
+        criteriaQuery.where(criteriaBuilder.equal(root.get("username"), username),
+                criteriaBuilder.equal(root.get("type"), type));
 
         User user = session.createQuery(criteriaQuery).uniqueResult();
 

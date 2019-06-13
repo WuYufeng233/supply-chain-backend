@@ -10,13 +10,16 @@
             <generator class="increment"/>
         </id>
         <property name="username">
-            <column name="username" sql-type="varchar(50)" length="50"/>
+            <column name="username" sql-type="varchar(64)" length="64"/>
         </property>
         <property name="password">
-            <column name="password" sql-type="varchar(50)" length="50"/>
+            <column name="password" sql-type="varchar(64)" length="64"/>
         </property>
         <property name="token">
             <column name="token" sql-type="varchar(256)" length="256"/>
+        </property>
+        <property name="type">
+            <column name="type" sql-type="int(11)"/>
         </property>
     </class>
 </hibernate-mapping>

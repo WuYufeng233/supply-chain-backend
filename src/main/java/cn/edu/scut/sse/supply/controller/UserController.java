@@ -4,10 +4,7 @@ import cn.edu.scut.sse.supply.pojo.ResponseResult;
 import cn.edu.scut.sse.supply.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Yukino Yukinoshita
@@ -26,20 +23,44 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public @ResponseBody
-    ResponseResult login(@RequestParam String username, @RequestParam String password) {
-        return userService.login(username, password);
+    ResponseResult login(@RequestParam String username, @RequestParam String password, @RequestParam int type) {
+        return userService.login(username, password, type);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public @ResponseBody
-    ResponseResult register(@RequestParam String username, @RequestParam String password) {
-        return userService.register(username, password);
+    ResponseResult register(@RequestParam String username, @RequestParam String password, @RequestParam String repeatPassword, @RequestParam int type) {
+        if (checkRepeatPassword(password, repeatPassword)) {
+            return userService.register(username, password, type);
+        }
+
+        ResponseResult result = new ResponseResult();
+        result.setCode(-1);
+        result.setMsg("密码与重复密码不一致");
+        return result;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/change_password")
+    @RequestMapping(method = RequestMethod.POST, value = "/change-password")
     public @ResponseBody
-    ResponseResult changePassword(@RequestParam String username, @RequestParam String oldPassword, @RequestParam String newPassword) {
-        return userService.changePassword(username, oldPassword, newPassword);
+    ResponseResult changePassword(@RequestHeader(value = "authorization") String token, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String repeatPassword) {
+        if (checkRepeatPassword(newPassword, repeatPassword)) {
+            return userService.changePassword(token, oldPassword, newPassword);
+        }
+
+        ResponseResult result = new ResponseResult();
+        result.setCode(-1);
+        result.setMsg("密码与重复密码不一致");
+        return result;
+    }
+
+    private boolean checkRepeatPassword(String s1, String s2) {
+        if (s1 == null || "".equals(s1)) {
+            return false;
+        }
+        if (s2 == null || "".equals(s2)) {
+            return false;
+        }
+        return s1.trim().equals(s2.trim());
     }
 
 }
