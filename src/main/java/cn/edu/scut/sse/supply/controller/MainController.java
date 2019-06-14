@@ -28,6 +28,12 @@ public class MainController {
         return "test success";
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/test-post")
+    public @ResponseBody
+    String testPost(@RequestParam String param) {
+        return param;
+    }
+
     @RequestMapping(value = "/helloworld/get")
     public @ResponseBody
     String get() {
