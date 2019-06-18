@@ -1,0 +1,1 @@
+[{"constant":true,"inputs":[{"name":"src","type":"bytes"}],"name":"cal","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"pure","type":"function"}]

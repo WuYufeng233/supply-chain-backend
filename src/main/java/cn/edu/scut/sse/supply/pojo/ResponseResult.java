@@ -17,24 +17,27 @@ public class ResponseResult {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public ResponseResult setCode(Integer code) {
         this.code = code;
+        return this;
     }
 
     public String getMsg() {
         return msg;
     }
 
-    public void setMsg(String msg) {
+    public ResponseResult setMsg(String msg) {
         this.msg = msg;
+        return this;
     }
 
     public Object getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public ResponseResult setData(Object data) {
         this.data = data;
+        return this;
     }
 
     @Override

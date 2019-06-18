@@ -4,6 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!-- 区块链配置 -->
+
     <bean id="encryptType" class="org.fisco.bcos.web3j.crypto.EncryptType">
         <constructor-arg value="0"/> <!-- 0:standard 1:guomi -->
     </bean>

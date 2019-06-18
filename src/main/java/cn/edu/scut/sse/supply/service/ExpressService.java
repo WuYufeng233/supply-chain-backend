@@ -3,7 +3,7 @@ package cn.edu.scut.sse.supply.service;
 import cn.edu.scut.sse.supply.dao.ExpressUserDAO;
 import cn.edu.scut.sse.supply.pojo.ExpressUser;
 import cn.edu.scut.sse.supply.pojo.ResponseResult;
-import cn.edu.scut.sse.supply.util.TokenUtil;
+import cn.edu.scut.sse.supply.util.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +60,7 @@ public class ExpressService {
         ExpressUser user = new ExpressUser();
         user.setUsername(username);
         user.setPassword(password);
-        user.setToken(TokenUtil.findToken(user));
+        user.setToken(HashUtil.findToken(user));
         expressUserDAO.saveUser(user);
 
         result.setCode(0);
@@ -90,7 +90,7 @@ public class ExpressService {
             return result;
         }
         user.setPassword(newPassword);
-        user.setToken(TokenUtil.findToken(user));
+        user.setToken(HashUtil.findToken(user));
         expressUserDAO.updateUser(user);
         result.setCode(0);
         result.setMsg("修改密码成功");

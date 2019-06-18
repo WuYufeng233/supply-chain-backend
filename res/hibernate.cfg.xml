@@ -35,6 +35,8 @@
         <mapping resource="InsuranceUser.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.UpstreamEnterpriseUser"/>
         <mapping resource="UpstreamEnterpriseUser.hbm.xml"/>
+        <mapping resource="CoreEnterpriseContract.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.CoreEnterpriseContract"/>
 
     </session-factory>
 </hibernate-configuration>
