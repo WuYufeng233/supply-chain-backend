@@ -11,5 +11,8 @@
         <property name="name">
             <column name="name" sql-type="varchar(50)" length="50"/>
         </property>
+        <property name="addr">
+            <column name="addr" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

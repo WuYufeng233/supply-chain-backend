@@ -19,10 +19,22 @@
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
         <!-- 配置hibernate的映射文件所在的位置 -->
-        <mapping resource="User.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.User"/>
+        <mapping resource="User.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.Enterprise"/>
         <mapping resource="Enterprise.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.BankUser"/>
+        <mapping resource="BankUser.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.CoreEnterpriseUser"/>
+        <mapping resource="CoreEnterpriseUser.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.DownstreamEnterpriseUser"/>
+        <mapping resource="DownstreamEnterpriseUser.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.ExpressUser"/>
+        <mapping resource="ExpressUser.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.InsuranceUser"/>
+        <mapping resource="InsuranceUser.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.UpstreamEnterpriseUser"/>
+        <mapping resource="UpstreamEnterpriseUser.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

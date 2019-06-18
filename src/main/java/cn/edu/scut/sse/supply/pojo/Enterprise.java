@@ -13,6 +13,7 @@ import javax.persistence.Id;
 public class Enterprise {
     private Integer code;
     private String name;
+    private String addr;
 
     @Id
     @Column(name = "code", nullable = false)
@@ -52,5 +53,15 @@ public class Enterprise {
         int result = code != null ? code.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "addr", nullable = true, length = 50)
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
     }
 }
