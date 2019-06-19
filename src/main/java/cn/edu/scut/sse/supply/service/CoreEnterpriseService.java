@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -166,6 +168,7 @@ public class CoreEnterpriseService {
         if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         List<ContractVO> contracts = coreEnterpriseContractDAO.listEnableContract().stream()
                 .map(coreEnterpriseContract -> {
                     ContractVO vo = new ContractVO();
@@ -180,7 +183,7 @@ public class CoreEnterpriseService {
                     if (coreEnterpriseContract.getStartDate() == null) {
                         vo.setStartDate("未知日期");
                     } else {
-                        vo.setStartDate(coreEnterpriseContract.getStartDate().toString());
+                        vo.setStartDate(format.format(coreEnterpriseContract.getStartDate()));
                     }
                     return vo;
                 }).collect(Collectors.toList());
