@@ -31,6 +31,8 @@ public class CoreEnterpriseService {
     private CoreEnterpriseContractDAO coreEnterpriseContractDAO;
     private EnterpriseDAO enterpriseDAO;
 
+    private static final int ENTERPRISE_CODE = 4001;
+
     @Autowired
     public CoreEnterpriseService(CoreEnterpriseUserDAO coreEnterpriseUserDAO,
                                  CoreEnterpriseContractDAO coreEnterpriseContractDAO,
@@ -127,6 +129,7 @@ public class CoreEnterpriseService {
         if (recycleContracts == null || recycleContracts.size() == 0) {
             contract = new CoreEnterpriseContract();
             contract.setHash(hash);
+            contract.setSponsor(ENTERPRISE_CODE);
             contract.setReceiver(0);
             coreEnterpriseContractDAO.saveContract(contract);
         } else {
@@ -174,12 +177,18 @@ public class CoreEnterpriseService {
                     ContractVO vo = new ContractVO();
                     vo.setFid(coreEnterpriseContract.getFid());
                     vo.setHash(coreEnterpriseContract.getHash());
-                    String name = EnterpriseUtil.getEnterpriseNameByCode(coreEnterpriseContract.getReceiver());
-                    if (name == null) {
-                        name = enterpriseDAO.getEnterpriseByCode(coreEnterpriseContract.getReceiver()).getName();
-                        EnterpriseUtil.putCodeName(coreEnterpriseContract.getReceiver(), name);
+                    String sponsor = EnterpriseUtil.getEnterpriseNameByCode(coreEnterpriseContract.getSponsor());
+                    if (sponsor == null) {
+                        sponsor = enterpriseDAO.getEnterpriseByCode(coreEnterpriseContract.getSponsor()).getName();
+                        EnterpriseUtil.putCodeName(coreEnterpriseContract.getSponsor(), sponsor);
                     }
-                    vo.setEnterprise(name);
+                    vo.setSponsor(sponsor);
+                    String receiver = EnterpriseUtil.getEnterpriseNameByCode(coreEnterpriseContract.getReceiver());
+                    if (receiver == null) {
+                        receiver = enterpriseDAO.getEnterpriseByCode(coreEnterpriseContract.getReceiver()).getName();
+                        EnterpriseUtil.putCodeName(coreEnterpriseContract.getReceiver(), receiver);
+                    }
+                    vo.setReceiver(receiver);
                     if (coreEnterpriseContract.getStartDate() == null) {
                         vo.setStartDate("未知日期");
                     } else {

@@ -8,7 +8,8 @@ public class ContractVO {
 
     private Integer fid;
     private String hash;
-    private String enterprise;
+    private String sponsor;
+    private String receiver;
     private String startDate;
 
     public Integer getFid() {
@@ -27,12 +28,20 @@ public class ContractVO {
         this.hash = hash;
     }
 
-    public String getEnterprise() {
-        return enterprise;
+    public String getSponsor() {
+        return sponsor;
     }
 
-    public void setEnterprise(String enterprise) {
-        this.enterprise = enterprise;
+    public void setSponsor(String sponsor) {
+        this.sponsor = sponsor;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public String getStartDate() {
@@ -48,8 +57,9 @@ public class ContractVO {
         return "ContractVO{" +
                 "fid=" + fid +
                 ", hash='" + hash + '\'' +
-                ", enterprise='" + enterprise + '\'' +
-                ", startDate=" + startDate +
+                ", sponsor='" + sponsor + '\'' +
+                ", receiver='" + receiver + '\'' +
+                ", startDate='" + startDate + '\'' +
                 '}';
     }
 }

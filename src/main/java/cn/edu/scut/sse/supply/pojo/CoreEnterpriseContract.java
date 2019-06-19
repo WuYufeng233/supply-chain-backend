@@ -14,6 +14,7 @@ public class CoreEnterpriseContract {
     private String hash;
     private Integer receiver;
     private Timestamp startDate;
+    private Integer sponsor;
 
     @Id
     @Column(name = "fid", nullable = false)
@@ -33,6 +34,16 @@ public class CoreEnterpriseContract {
 
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    @Basic
+    @Column(name = "sponsor", nullable = true)
+    public Integer getSponsor() {
+        return sponsor;
+    }
+
+    public void setSponsor(Integer sponsor) {
+        this.sponsor = sponsor;
     }
 
     @Basic
@@ -76,5 +87,4 @@ public class CoreEnterpriseContract {
         result = 31 * result + (receiver != null ? receiver.hashCode() : 0);
         return result;
     }
-
 }
