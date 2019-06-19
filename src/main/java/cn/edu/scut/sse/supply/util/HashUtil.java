@@ -23,12 +23,15 @@ public class HashUtil {
 
     public static String findToken(Object obj) {
         String token = obj.toString();
+        SecureRandom random = new SecureRandom();
+        int randomInt = random.nextInt(Math.abs(obj.hashCode()));
+        BigInteger i1 = BigInteger.valueOf(randomInt);
+        BigInteger i2 = BigInteger.valueOf(obj.hashCode());
+        BigInteger i3 = BigInteger.valueOf(System.currentTimeMillis());
+        BigInteger resultInt = i1.multiply(i2).multiply(i3);
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            SecureRandom random = new SecureRandom();
-            int randomInt = random.nextInt(Math.abs(obj.hashCode()));
-            long l1 = (long) randomInt * (long) obj.hashCode() * System.currentTimeMillis();
-            token = byteArrayToHex(messageDigest.digest(String.valueOf(l1).getBytes()));
+            token = byteArrayToHex(messageDigest.digest(resultInt.toString().getBytes()));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
