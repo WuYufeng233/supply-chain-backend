@@ -50,7 +50,7 @@ public class CoreEnterpriseContractDAO {
         return contract;
     }
 
-    public List<CoreEnterpriseContract> listContract() {
+    public List<CoreEnterpriseContract> listEnableContract() {
         SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactoryInstance();
         Session session = sessionFactory.openSession();
 

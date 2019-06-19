@@ -1,6 +1,7 @@
 package cn.edu.scut.sse.supply.pojo;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 /**
  * @author Yukino Yukinoshita
@@ -12,6 +13,7 @@ public class CoreEnterpriseContract {
     private Integer fid;
     private String hash;
     private Integer receiver;
+    private Timestamp startDate;
 
     @Id
     @Column(name = "fid", nullable = false)
@@ -43,6 +45,16 @@ public class CoreEnterpriseContract {
         this.receiver = receiver;
     }
 
+    @Basic
+    @Column(name = "start_date", nullable = true)
+    public Timestamp getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Timestamp startDate) {
+        this.startDate = startDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,4 +76,5 @@ public class CoreEnterpriseContract {
         result = 31 * result + (receiver != null ? receiver.hashCode() : 0);
         return result;
     }
+
 }

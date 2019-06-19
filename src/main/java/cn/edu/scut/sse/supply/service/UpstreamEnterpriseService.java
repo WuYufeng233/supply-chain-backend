@@ -1,8 +1,8 @@
 package cn.edu.scut.sse.supply.service;
 
 import cn.edu.scut.sse.supply.dao.UpstreamEnterpriseUserDAO;
-import cn.edu.scut.sse.supply.pojo.ResponseResult;
 import cn.edu.scut.sse.supply.pojo.UpstreamEnterpriseUser;
+import cn.edu.scut.sse.supply.pojo.vo.ResponseResult;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

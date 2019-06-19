@@ -2,8 +2,8 @@ package cn.edu.scut.sse.supply.service;
 
 import cn.edu.scut.sse.supply.contracts.EnterpriseToken;
 import cn.edu.scut.sse.supply.dao.UserDAO;
-import cn.edu.scut.sse.supply.pojo.ResponseResult;
 import cn.edu.scut.sse.supply.pojo.User;
+import cn.edu.scut.sse.supply.pojo.vo.ResponseResult;
 import cn.edu.scut.sse.supply.util.Web3jUtil;
 import org.fisco.bcos.web3j.crypto.Credentials;
 import org.fisco.bcos.web3j.protocol.Web3j;

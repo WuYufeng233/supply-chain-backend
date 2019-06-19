@@ -1,6 +1,6 @@
 package cn.edu.scut.sse.supply.controller;
 
-import cn.edu.scut.sse.supply.pojo.ResponseResult;
+import cn.edu.scut.sse.supply.pojo.vo.ResponseResult;
 import cn.edu.scut.sse.supply.service.CoreEnterpriseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,6 +67,12 @@ public class CoreEnterpriseController {
     public @ResponseBody
     ResponseResult contractLaunch(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String hash, @RequestParam int receiver) {
         return coreEnterpriseService.contractLaunch(token, fid, hash, receiver);
+    }
+
+    @RequestMapping("/contract/list")
+    public @ResponseBody
+    ResponseResult listContract(@RequestHeader("authorization") String token) {
+        return coreEnterpriseService.listContract(token);
     }
 
     private boolean checkRepeatPassword(String s1, String s2) {

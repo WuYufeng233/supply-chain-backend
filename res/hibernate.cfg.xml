@@ -6,9 +6,10 @@
     <session-factory>
         <!-- 配置关于数据库连接的四个项：driverClass  url username password -->
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/supply_chain?serverTimezone=UTC</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/supply_chain?serverTimezone=GMT%2B8
+        </property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">root</property>
+        <property name="hibernate.connection.password">kkk123456***</property>
 
         <!-- 可以将向数据库发送的SQL语句显示出来 -->
         <property name="hibernate.show_sql">true</property>
@@ -35,8 +36,8 @@
         <mapping resource="InsuranceUser.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.UpstreamEnterpriseUser"/>
         <mapping resource="UpstreamEnterpriseUser.hbm.xml"/>
-        <mapping resource="CoreEnterpriseContract.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.CoreEnterpriseContract"/>
+        <mapping resource="CoreEnterpriseContract.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

@@ -1,6 +1,6 @@
 package cn.edu.scut.sse.supply.controller;
 
-import cn.edu.scut.sse.supply.pojo.ResponseResult;
+import cn.edu.scut.sse.supply.pojo.vo.ResponseResult;
 import cn.edu.scut.sse.supply.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

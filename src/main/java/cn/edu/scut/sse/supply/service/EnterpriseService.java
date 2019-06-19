@@ -2,7 +2,7 @@ package cn.edu.scut.sse.supply.service;
 
 import cn.edu.scut.sse.supply.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.pojo.Enterprise;
-import cn.edu.scut.sse.supply.pojo.ResponseResult;
+import cn.edu.scut.sse.supply.pojo.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

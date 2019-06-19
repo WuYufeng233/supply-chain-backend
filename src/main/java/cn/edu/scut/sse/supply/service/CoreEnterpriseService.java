@@ -3,11 +3,18 @@ package cn.edu.scut.sse.supply.service;
 import cn.edu.scut.sse.supply.dao.CoreEnterpriseContractDAO;
 import cn.edu.scut.sse.supply.dao.CoreEnterpriseUserDAO;
 import cn.edu.scut.sse.supply.dao.EnterpriseDAO;
-import cn.edu.scut.sse.supply.pojo.*;
+import cn.edu.scut.sse.supply.pojo.CoreEnterpriseContract;
+import cn.edu.scut.sse.supply.pojo.CoreEnterpriseUser;
+import cn.edu.scut.sse.supply.pojo.Enterprise;
+import cn.edu.scut.sse.supply.pojo.vo.ContractUploadResultVO;
+import cn.edu.scut.sse.supply.pojo.vo.ContractVO;
+import cn.edu.scut.sse.supply.pojo.vo.ResponseResult;
+import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -149,9 +156,35 @@ public class CoreEnterpriseService {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
         }
         contract.setReceiver(receiver);
+        contract.setStartDate(new Timestamp(System.currentTimeMillis()));
         coreEnterpriseContractDAO.updateContract(contract);
         // TODO: 签名上链
         return new ResponseResult().setCode(0).setMsg("发起合同成功");
+    }
+
+    public ResponseResult listContract(String token) {
+        if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        List<ContractVO> contracts = coreEnterpriseContractDAO.listEnableContract().stream()
+                .map(coreEnterpriseContract -> {
+                    ContractVO vo = new ContractVO();
+                    vo.setFid(coreEnterpriseContract.getFid());
+                    vo.setHash(coreEnterpriseContract.getHash());
+                    String name = EnterpriseUtil.getEnterpriseNameByCode(coreEnterpriseContract.getReceiver());
+                    if (name == null) {
+                        name = enterpriseDAO.getEnterpriseByCode(coreEnterpriseContract.getReceiver()).getName();
+                        EnterpriseUtil.putCodeName(coreEnterpriseContract.getReceiver(), name);
+                    }
+                    vo.setEnterprise(name);
+                    if (coreEnterpriseContract.getStartDate() == null) {
+                        vo.setStartDate("未知日期");
+                    } else {
+                        vo.setStartDate(coreEnterpriseContract.getStartDate().toString());
+                    }
+                    return vo;
+                }).collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(contracts);
     }
 
     private boolean checkLegalEnterpriseType(int type) {

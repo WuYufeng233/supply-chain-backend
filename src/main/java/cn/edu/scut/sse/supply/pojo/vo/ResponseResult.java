@@ -1,4 +1,4 @@
-package cn.edu.scut.sse.supply.pojo;
+package cn.edu.scut.sse.supply.pojo.vo;
 
 /**
  * @author Yukino Yukinoshita

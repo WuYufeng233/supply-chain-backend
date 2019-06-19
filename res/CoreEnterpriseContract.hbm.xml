@@ -16,5 +16,8 @@
         <property name="receiver">
             <column name="receiver" sql-type="int(11)" not-null="true"/>
         </property>
+        <property name="startDate">
+            <column name="start_date" sql-type="datetime"/>
+        </property>
     </class>
 </hibernate-mapping>
