@@ -4,6 +4,7 @@ import cn.edu.scut.sse.supply.contracts.ContractRepo;
 import cn.edu.scut.sse.supply.pojo.DownstreamEnterpriseContract;
 import cn.edu.scut.sse.supply.pojo.vo.DetailContractVO;
 import cn.edu.scut.sse.supply.pojo.vo.ResponseResult;
+import cn.edu.scut.sse.supply.util.ContractUtil;
 import cn.edu.scut.sse.supply.util.SessionFactoryUtil;
 import cn.edu.scut.sse.supply.util.Web3jUtil;
 import org.fisco.bcos.web3j.crypto.Credentials;
@@ -33,7 +34,7 @@ public class DownstreamEnterpriseContractDAO {
     private BigInteger gasPrice = new BigInteger("300000000");
     private BigInteger gasLimit = new BigInteger("300000000");
     private Credentials credentials = Credentials.create("b33405550c96ef5ae7d7d9a6b323fa739277bb469546db96c1e2e5690ea871fe");
-    private String address = "0x1fb61ea047b115a0942a2b6220016b935c90ee8f";
+    private String address = ContractUtil.CONTRACT_REPO_ADDRESS;
 
     public void saveContract(DownstreamEnterpriseContract contract) {
         Session session = SessionFactoryUtil.getSessionFactoryInstance().openSession();
@@ -117,7 +118,7 @@ public class DownstreamEnterpriseContractDAO {
         vo.setReceiverSignature(response.receiverSignature);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         vo.setStartDate(format.format(new Date(response.startTime.longValue())));
-        vo.setStatus(response.status.intValue());
+        vo.setStatus(response.status);
         return vo;
     }
 
@@ -146,6 +147,19 @@ public class DownstreamEnterpriseContractDAO {
             return new ResponseResult().setCode(-6).setMsg("未获得返回消息");
         }
         ContractRepo.ReceiveContractEventEventResponse response = list.get(0);
+        return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg);
+    }
+
+    public ResponseResult updateContractStatusToFisco(int enterpriseCode, int fid, String status) throws Exception {
+        Web3j web3j = Web3jUtil.getWeb3j();
+        ContractRepo contractRepo = ContractRepo.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
+
+        TransactionReceipt receipt = contractRepo.updateContractStatus(BigInteger.valueOf(fid), BigInteger.valueOf(enterpriseCode), status).send();
+        List<ContractRepo.UpdateContractStatusEventEventResponse> list = contractRepo.getUpdateContractStatusEventEvents(receipt);
+        if (list.size() == 0) {
+            return new ResponseResult().setCode(-6).setMsg("未获得返回消息");
+        }
+        ContractRepo.UpdateContractStatusEventEventResponse response = list.get(0);
         return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg);
     }
 

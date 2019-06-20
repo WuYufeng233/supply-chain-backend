@@ -319,6 +319,18 @@ public class UpstreamEnterpriseService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
     }
 
+    public ResponseResult updateContract(String token, int fid, String status) {
+        if (upstreamEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return upstreamEnterpriseContractDAO.updateContractStatusToFisco(ENTERPRISE_CODE, fid, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部错误");
+        }
+    }
+
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()
                 .map(Enterprise::getCode).collect(Collectors.toList());

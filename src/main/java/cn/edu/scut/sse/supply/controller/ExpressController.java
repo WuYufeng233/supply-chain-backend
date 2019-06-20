@@ -86,6 +86,12 @@ public class ExpressController {
     ResponseResult getContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
         return expressService.getContract(token, fid);
     }
+
+    @RequestMapping("/contract/update")
+    public @ResponseBody
+    ResponseResult updateContract(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
+        return expressService.updateContract(token, fid, status);
+    }
     
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {

@@ -15,7 +15,7 @@ public class DetailContractVO {
     private String receiverSignature;
     private Integer receiverVerify;
     private String startDate;
-    private Integer status;
+    private String status;
 
     public Integer getContractId() {
         return contractId;
@@ -89,11 +89,11 @@ public class DetailContractVO {
         this.startDate = startDate;
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

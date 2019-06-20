@@ -87,6 +87,12 @@ public class DownstreamEnterpriseController {
         return downstreamEnterpriseService.getContract(token, fid);
     }
 
+    @RequestMapping("/contract/update")
+    public @ResponseBody
+    ResponseResult updateContract(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
+        return downstreamEnterpriseService.updateContract(token, fid, status);
+    }
+
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {
             return false;
