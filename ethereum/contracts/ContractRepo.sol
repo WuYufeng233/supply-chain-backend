@@ -42,7 +42,7 @@ contract ContractRepo {
         emit receiveContractEvent(0, "合同接受完成");
     }
 
-    function getContract(int id) public view {
+    function getContract(int id) public {
         emit getContractCallback(contracts[id].hash,
             contracts[id].sponsor, contracts[id].receiver,
             contracts[id].sponsorSignature, contracts[id].receiverSignature,

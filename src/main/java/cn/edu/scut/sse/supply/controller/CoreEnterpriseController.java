@@ -69,10 +69,22 @@ public class CoreEnterpriseController {
         return coreEnterpriseService.contractLaunch(token, fid, hash, receiver);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/receive")
+    public @ResponseBody
+    ResponseResult receiveContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
+        return coreEnterpriseService.receiveContract(token, fid);
+    }
+
     @RequestMapping("/contract/list")
     public @ResponseBody
     ResponseResult listContract(@RequestHeader("authorization") String token) {
         return coreEnterpriseService.listContract(token);
+    }
+
+    @RequestMapping("/contract/detail")
+    public @ResponseBody
+    ResponseResult getContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
+        return coreEnterpriseService.getContract(token, fid);
     }
 
     private boolean checkRepeatPassword(String s1, String s2) {

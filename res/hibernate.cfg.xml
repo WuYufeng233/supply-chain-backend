@@ -38,6 +38,8 @@
         <mapping resource="UpstreamEnterpriseUser.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.CoreEnterpriseContract"/>
         <mapping resource="CoreEnterpriseContract.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.Keystore"/>
+        <mapping resource="Keystore.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>
