@@ -336,5 +336,5 @@ public class InsuranceService {
                 .map(Enterprise::getCode).collect(Collectors.toList());
         return codeList.contains(type);
     }
-    
+
 }

@@ -36,7 +36,7 @@ public class BankService {
     private BankContractDAO bankContractDAO;
     private EnterpriseDAO enterpriseDAO;
     private KeystoreDAO keystoreDAO;
-    
+
     @Autowired
     public BankService(BankUserDAO bankUserDAO,
                        BankContractDAO bankContractDAO,

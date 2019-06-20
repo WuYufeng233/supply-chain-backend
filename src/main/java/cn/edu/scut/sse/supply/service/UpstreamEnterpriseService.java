@@ -336,5 +336,5 @@ public class UpstreamEnterpriseService {
                 .map(Enterprise::getCode).collect(Collectors.toList());
         return codeList.contains(type);
     }
-    
+
 }
