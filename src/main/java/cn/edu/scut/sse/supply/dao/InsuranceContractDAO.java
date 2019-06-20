@@ -137,11 +137,11 @@ public class InsuranceContractDAO {
         return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg);
     }
 
-    public ResponseResult receiveContractToFisco(int fid, String signature) throws Exception {
+    public ResponseResult receiveContractToFisco(int fid, int code, String signature) throws Exception {
         Web3j web3j = Web3jUtil.getWeb3j();
         ContractRepo contractRepo = ContractRepo.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
 
-        TransactionReceipt receipt = contractRepo.receiveContract(BigInteger.valueOf(fid), signature).send();
+        TransactionReceipt receipt = contractRepo.receiveContract(BigInteger.valueOf(fid), BigInteger.valueOf(code), signature).send();
         List<ContractRepo.ReceiveContractEventEventResponse> list = contractRepo.getReceiveContractEventEvents(receipt);
         if (list.size() == 0) {
             return new ResponseResult().setCode(-6).setMsg("未获得返回消息");

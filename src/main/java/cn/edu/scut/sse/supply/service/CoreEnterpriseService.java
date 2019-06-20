@@ -201,7 +201,7 @@ public class CoreEnterpriseService {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
-        if (Integer.parseInt(detailContract.getReceiver()) != ENTERPRISE_CODE) {
+        if (Integer.parseInt(detailContract.getSponsor()) != ENTERPRISE_CODE && Integer.parseInt(detailContract.getReceiver()) != ENTERPRISE_CODE) {
             return new ResponseResult().setCode(-9).setMsg("非法请求");
         }
         CoreEnterpriseContract contract = new CoreEnterpriseContract();
@@ -223,7 +223,7 @@ public class CoreEnterpriseService {
         String signature = SignVerifyUtil.sign(privateKey, detailContract.getHash());
 
         try {
-            return coreEnterpriseContractDAO.receiveContractToFisco(fid, signature);
+            return coreEnterpriseContractDAO.receiveContractToFisco(fid, ENTERPRISE_CODE, signature);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");

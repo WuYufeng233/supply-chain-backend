@@ -29,17 +29,31 @@ contract ContractRepo {
         emit launchContractEvent(0, "合同发起完成");
     }
 
-    function receiveContract(int id, string receiverSignature) public {
+    function receiveContract(int id, uint code, string signature) public {
         if (contracts[id].startTime == 0) {
             emit receiveContractEvent(- 1, "合同不存在");
             return;
         }
-        if (keccak256(abi.encodePacked(contracts[id].receiverSignature)) != keccak256(abi.encodePacked(""))) {
-            emit receiveContractEvent(- 2, "合同已签名");
+        if (contracts[id].sponsor == code) {
+            if (keccak256(abi.encodePacked(contracts[id].sponsorSignature)) != keccak256(abi.encodePacked(""))) {
+                emit receiveContractEvent(- 2, "合同已签名");
+                return;
+            }
+            contracts[id].sponsorSignature = signature;
+            emit receiveContractEvent(0, "合同签名完成");
+            return;
+        } else if (contracts[id].receiver == code) {
+            if (keccak256(abi.encodePacked(contracts[id].receiverSignature)) != keccak256(abi.encodePacked(""))) {
+                emit receiveContractEvent(- 2, "合同已签名");
+                return;
+            }
+            contracts[id].receiverSignature = signature;
+            emit receiveContractEvent(0, "合同签名完成");
+            return;
+        } else {
+            emit receiveContractEvent(- 3, "非法请求");
             return;
         }
-        contracts[id].receiverSignature = receiverSignature;
-        emit receiveContractEvent(0, "合同接受完成");
     }
 
     function updateContractStatus(int id, uint code, string status){

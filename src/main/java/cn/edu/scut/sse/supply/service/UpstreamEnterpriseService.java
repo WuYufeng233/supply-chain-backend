@@ -200,7 +200,7 @@ public class UpstreamEnterpriseService {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
-        if (Integer.parseInt(detailContract.getReceiver()) != ENTERPRISE_CODE) {
+        if (Integer.parseInt(detailContract.getSponsor()) != ENTERPRISE_CODE && Integer.parseInt(detailContract.getReceiver()) != ENTERPRISE_CODE) {
             return new ResponseResult().setCode(-9).setMsg("非法请求");
         }
         UpstreamEnterpriseContract contract = new UpstreamEnterpriseContract();
@@ -222,7 +222,7 @@ public class UpstreamEnterpriseService {
         String signature = SignVerifyUtil.sign(privateKey, detailContract.getHash());
 
         try {
-            return upstreamEnterpriseContractDAO.receiveContractToFisco(fid, signature);
+            return upstreamEnterpriseContractDAO.receiveContractToFisco(fid, ENTERPRISE_CODE, signature);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
