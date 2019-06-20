@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="cn.edu.scut.sse.supply.pojo.DownstreamEnterpriseUser" table="downstream_enterprise_user"
+    <class name="cn.edu.scut.sse.supply.downstreamenterprise.entity.pojo.DownstreamEnterpriseUser" table="downstream_enterprise_user"
            schema="supply_chain">
         <id name="uid">
             <column name="uid" sql-type="int(11)"/>

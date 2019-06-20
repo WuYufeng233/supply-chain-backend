@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="cn.edu.scut.sse.supply.pojo.Enterprise" table="enterprise" schema="supply_chain">
+    <class name="cn.edu.scut.sse.supply.general.entity.pojo.Enterprise" table="enterprise" schema="supply_chain">
         <id name="code">
             <column name="code" sql-type="int(11)"/>
         </id>

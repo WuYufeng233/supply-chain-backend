@@ -10,6 +10,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import static cn.edu.scut.sse.supply.util.ContractUtil.HASH_CALCULATOR_ADDRESS;
+
 /**
  * @author Yukino Yukinoshita
  */
@@ -19,7 +21,7 @@ public class HashUtil {
     private static BigInteger gasPrice = new BigInteger("300000000");
     private static BigInteger gasLimit = new BigInteger("300000000");
     private static Credentials credentials = Credentials.create("b33405550c96ef5ae7d7d9a6b323fa739277bb469546db96c1e2e5690ea871fe");
-    private static String address = "0xf4fa276d2f22005efeed8e3509e708b9b386d8c7";
+    private static String address = HASH_CALCULATOR_ADDRESS;
 
     public static String findToken(Object obj) {
         String token = obj.toString();

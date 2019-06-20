@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="cn.edu.scut.sse.supply.pojo.UpstreamEnterpriseContract" table="upstream_enterprise_contract"
+    <class name="cn.edu.scut.sse.supply.upstreamenterprise.entity.pojo.UpstreamEnterpriseContract" table="upstream_enterprise_contract"
            schema="supply_chain">
         <id name="fid">
             <column name="fid" sql-type="int(11)"/>

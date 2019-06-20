@@ -9,9 +9,13 @@ http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="cn.edu.scut.sse.supply.controller"/>
-    <context:component-scan base-package="cn.edu.scut.sse.supply.service"/>
-    <context:component-scan base-package="cn.edu.scut.sse.supply.dao"/>
+    <context:component-scan base-package="cn.edu.scut.sse.supply.bank"/>
+    <context:component-scan base-package="cn.edu.scut.sse.supply.coreenterprise"/>
+    <context:component-scan base-package="cn.edu.scut.sse.supply.downstreamenterprise"/>
+    <context:component-scan base-package="cn.edu.scut.sse.supply.express"/>
+    <context:component-scan base-package="cn.edu.scut.sse.supply.general"/>
+    <context:component-scan base-package="cn.edu.scut.sse.supply.insurance"/>
+    <context:component-scan base-package="cn.edu.scut.sse.supply.upstreamenterprise"/>
     <!-- 注册适配器 -->
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">

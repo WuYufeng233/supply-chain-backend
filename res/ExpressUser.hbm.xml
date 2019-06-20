@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="cn.edu.scut.sse.supply.pojo.ExpressUser" table="express_user" schema="supply_chain">
+    <class name="cn.edu.scut.sse.supply.express.entity.pojo.ExpressUser" table="express_user" schema="supply_chain">
         <id name="uid">
             <column name="uid" sql-type="int(11)"/>
             <generator class="increment"/>

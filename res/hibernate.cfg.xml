@@ -20,35 +20,35 @@
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
         <!-- 配置hibernate的映射文件所在的位置 -->
-        <mapping class="cn.edu.scut.sse.supply.pojo.User"/>
+        <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.User"/>
         <mapping resource="User.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.Enterprise"/>
+        <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.Enterprise"/>
         <mapping resource="Enterprise.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.BankUser"/>
+        <mapping class="cn.edu.scut.sse.supply.bank.entity.pojo.BankUser"/>
         <mapping resource="BankUser.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.CoreEnterpriseUser"/>
+        <mapping class="cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseUser"/>
         <mapping resource="CoreEnterpriseUser.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.DownstreamEnterpriseUser"/>
+        <mapping class="cn.edu.scut.sse.supply.downstreamenterprise.entity.pojo.DownstreamEnterpriseUser"/>
         <mapping resource="DownstreamEnterpriseUser.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.ExpressUser"/>
+        <mapping class="cn.edu.scut.sse.supply.express.entity.pojo.ExpressUser"/>
         <mapping resource="ExpressUser.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.InsuranceUser"/>
+        <mapping class="cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceUser"/>
         <mapping resource="InsuranceUser.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.UpstreamEnterpriseUser"/>
+        <mapping class="cn.edu.scut.sse.supply.upstreamenterprise.entity.pojo.UpstreamEnterpriseUser"/>
         <mapping resource="UpstreamEnterpriseUser.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.CoreEnterpriseContract"/>
+        <mapping class="cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseContract"/>
         <mapping resource="CoreEnterpriseContract.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.BankContract"/>
+        <mapping class="cn.edu.scut.sse.supply.bank.entity.pojo.BankContract"/>
         <mapping resource="BankContract.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.DownstreamEnterpriseContract"/>
+        <mapping class="cn.edu.scut.sse.supply.downstreamenterprise.entity.pojo.DownstreamEnterpriseContract"/>
         <mapping resource="DownstreamEnterpriseContract.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.ExpressContract"/>
+        <mapping class="cn.edu.scut.sse.supply.express.entity.pojo.ExpressContract"/>
         <mapping resource="ExpressContract.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.InsuranceContract"/>
+        <mapping class="cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceContract"/>
         <mapping resource="InsuranceContract.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.UpstreamEnterpriseContract"/>
+        <mapping class="cn.edu.scut.sse.supply.upstreamenterprise.entity.pojo.UpstreamEnterpriseContract"/>
         <mapping resource="UpstreamEnterpriseContract.hbm.xml"/>
-        <mapping class="cn.edu.scut.sse.supply.pojo.Keystore"/>
+        <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.Keystore"/>
         <mapping resource="Keystore.hbm.xml"/>
 
     </session-factory>
