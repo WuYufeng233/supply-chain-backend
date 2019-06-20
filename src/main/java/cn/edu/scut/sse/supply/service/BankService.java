@@ -203,6 +203,13 @@ public class BankService {
         if (Integer.parseInt(detailContract.getReceiver()) != ENTERPRISE_CODE) {
             return new ResponseResult().setCode(-9).setMsg("非法请求");
         }
+        BankContract contract = new BankContract();
+        contract.setHash(detailContract.getHash());
+        contract.setSponsor(Integer.parseInt(detailContract.getSponsor()));
+        contract.setReceiver(Integer.parseInt(detailContract.getReceiver()));
+        contract.setStartDate(Timestamp.valueOf(detailContract.getStartDate()));
+        bankContractDAO.saveContract(contract);
+        // 以下是签名上链
         String privateKey;
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);

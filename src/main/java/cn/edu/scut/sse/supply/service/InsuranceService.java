@@ -203,6 +203,12 @@ public class InsuranceService {
         if (Integer.parseInt(detailContract.getReceiver()) != ENTERPRISE_CODE) {
             return new ResponseResult().setCode(-9).setMsg("非法请求");
         }
+        InsuranceContract contract = new InsuranceContract();
+        contract.setHash(detailContract.getHash());
+        contract.setSponsor(Integer.parseInt(detailContract.getSponsor()));
+        contract.setReceiver(Integer.parseInt(detailContract.getReceiver()));
+        contract.setStartDate(Timestamp.valueOf(detailContract.getStartDate()));
+        insuranceContractDAO.saveContract(contract);
         String privateKey;
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
