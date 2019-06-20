@@ -38,6 +38,16 @@
         <mapping resource="UpstreamEnterpriseUser.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.CoreEnterpriseContract"/>
         <mapping resource="CoreEnterpriseContract.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.BankContract"/>
+        <mapping resource="BankContract.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.DownstreamEnterpriseContract"/>
+        <mapping resource="DownstreamEnterpriseContract.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.ExpressContract"/>
+        <mapping resource="ExpressContract.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.InsuranceContract"/>
+        <mapping resource="InsuranceContract.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.pojo.UpstreamEnterpriseContract"/>
+        <mapping resource="UpstreamEnterpriseContract.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.pojo.Keystore"/>
         <mapping resource="Keystore.hbm.xml"/>
 

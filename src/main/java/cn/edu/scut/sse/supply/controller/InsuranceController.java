@@ -5,6 +5,7 @@ import cn.edu.scut.sse.supply.service.InsuranceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author Yukino Yukinoshita
@@ -53,6 +54,39 @@ public class InsuranceController {
         return result;
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/upload")
+    public @ResponseBody
+    ResponseResult contractUpload(@RequestHeader("authorization") String token, @RequestParam CommonsMultipartFile contract) {
+        if (contract == null) {
+            return new ResponseResult().setCode(-1).setMsg("文件为空");
+        }
+        return insuranceService.contractUpload(token, contract.getBytes());
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/launch")
+    public @ResponseBody
+    ResponseResult contractLaunch(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String hash, @RequestParam int receiver) {
+        return insuranceService.contractLaunch(token, fid, hash, receiver);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/receive")
+    public @ResponseBody
+    ResponseResult receiveContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
+        return insuranceService.receiveContract(token, fid);
+    }
+
+    @RequestMapping("/contract/list")
+    public @ResponseBody
+    ResponseResult listContract(@RequestHeader("authorization") String token) {
+        return insuranceService.listContract(token);
+    }
+
+    @RequestMapping("/contract/detail")
+    public @ResponseBody
+    ResponseResult getContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
+        return insuranceService.getContract(token, fid);
+    }
+    
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {
             return false;
