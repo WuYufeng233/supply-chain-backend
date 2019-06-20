@@ -33,9 +33,9 @@ public class CoreEnterpriseService {
     private CoreEnterpriseUserDAO coreEnterpriseUserDAO;
     private CoreEnterpriseContractDAO coreEnterpriseContractDAO;
     private EnterpriseDAO enterpriseDAO;
-    private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
 
     private static final int ENTERPRISE_CODE = 4001;
+    private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private KeystoreDAO keystoreDAO;
 
     @Autowired
