@@ -391,6 +391,23 @@ public class DownstreamEnterpriseService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(list);
     }
 
+    public ResponseResult getSignatureOfText(String token, String text) {
+        if (downstreamEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        String privateKey;
+        try {
+            privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+        if (privateKey == null || "".equals(privateKey)) {
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误，未取得密钥");
+        }
+        String signature = SignVerifyUtil.sign(privateKey, text);
+        return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
+    }
 
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()

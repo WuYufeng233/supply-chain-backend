@@ -119,6 +119,12 @@ public class UpstreamEnterpriseController {
         return upstreamEnterpriseService.listTokenTransaction(token);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/signature/text")
+    public @ResponseBody
+    ResponseResult getSignatureOfText(@RequestHeader("authorization") String token, @RequestParam String text) {
+        return upstreamEnterpriseService.getSignatureOfText(token, text);
+    }
+
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {
             return false;
