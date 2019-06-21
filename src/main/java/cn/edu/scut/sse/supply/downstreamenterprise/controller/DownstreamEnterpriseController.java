@@ -1,7 +1,7 @@
 package cn.edu.scut.sse.supply.downstreamenterprise.controller;
 
-import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.downstreamenterprise.service.DownstreamEnterpriseService;
+import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -81,13 +81,13 @@ public class DownstreamEnterpriseController {
         return downstreamEnterpriseService.listContract(token);
     }
 
-    @RequestMapping("/contract/detail")
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/detail")
     public @ResponseBody
     ResponseResult getContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
         return downstreamEnterpriseService.getContract(token, fid);
     }
 
-    @RequestMapping("/contract/update")
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/update")
     public @ResponseBody
     ResponseResult updateContract(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
         return downstreamEnterpriseService.updateContract(token, fid, status);

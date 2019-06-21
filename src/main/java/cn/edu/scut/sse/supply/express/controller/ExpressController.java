@@ -1,7 +1,7 @@
 package cn.edu.scut.sse.supply.express.controller;
 
-import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.express.service.ExpressService;
+import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -81,13 +81,13 @@ public class ExpressController {
         return expressService.listContract(token);
     }
 
-    @RequestMapping("/contract/detail")
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/detail")
     public @ResponseBody
     ResponseResult getContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
         return expressService.getContract(token, fid);
     }
 
-    @RequestMapping("/contract/update")
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/update")
     public @ResponseBody
     ResponseResult updateContract(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
         return expressService.updateContract(token, fid, status);

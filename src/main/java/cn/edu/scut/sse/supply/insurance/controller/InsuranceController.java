@@ -81,13 +81,13 @@ public class InsuranceController {
         return insuranceService.listContract(token);
     }
 
-    @RequestMapping("/contract/detail")
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/detail")
     public @ResponseBody
     ResponseResult getContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
         return insuranceService.getContract(token, fid);
     }
 
-    @RequestMapping("/contract/update")
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/update")
     public @ResponseBody
     ResponseResult updateContract(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
         return insuranceService.updateContract(token, fid, status);

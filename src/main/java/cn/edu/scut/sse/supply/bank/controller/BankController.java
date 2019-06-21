@@ -1,7 +1,7 @@
 package cn.edu.scut.sse.supply.bank.controller;
 
-import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.bank.service.BankService;
+import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -81,13 +81,13 @@ public class BankController {
         return bankService.listContract(token);
     }
 
-    @RequestMapping("/contract/detail")
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/detail")
     public @ResponseBody
     ResponseResult getContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
         return bankService.getContract(token, fid);
     }
 
-    @RequestMapping("/contract/update")
+    @RequestMapping(method = RequestMethod.POST, value = "/contract/update")
     public @ResponseBody
     ResponseResult updateContract(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
         return bankService.updateContract(token, fid, status);
