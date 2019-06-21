@@ -48,7 +48,7 @@ public class InsuranceTokenDAO {
             return new ResponseResult().setCode(-6).setMsg("未获得返回消息");
         }
         EnterpriseToken.PayTokenEventEventResponse response = list.get(0);
-        return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg);
+        return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg).setData(receipt.getTransactionHash());
     }
 
 

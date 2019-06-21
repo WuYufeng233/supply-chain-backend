@@ -34,7 +34,7 @@ public class EnterpriseController {
         return enterpriseService.listEnterprise();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "token/create")
+    @RequestMapping(method = RequestMethod.POST, value = "/token/create")
     public @ResponseBody
     ResponseResult createTokenAccount(@RequestHeader("authorization") String token, int code, String name) {
         logger.info("Create token account, token = {}, code = {}, name = {}", token, code, name);
@@ -44,7 +44,7 @@ public class EnterpriseController {
         return enterpriseService.createTokenAccount(code, name);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "token/update")
+    @RequestMapping(method = RequestMethod.POST, value = "/token/update")
     public @ResponseBody
     ResponseResult updateTokenAccount(@RequestHeader("authorization") String token, int code, String name) {
         logger.info("Update token account, token = {}, code = {}, name = {}", token, code, name);
