@@ -31,4 +31,20 @@ public class EnterpriseService {
         return result;
     }
 
+    public ResponseResult createTokenAccount(int code, String name) {
+        try {
+            return enterpriseDAO.createTokenAccountToFisco(code, name);
+        } catch (Exception e) {
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult updateTokenAccount(int code, String name) {
+        try {
+            return enterpriseDAO.updateTokenAccountToFisco(code, name);
+        } catch (Exception e) {
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
 }

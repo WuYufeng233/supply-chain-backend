@@ -1,6 +1,7 @@
 package cn.edu.scut.sse.supply.bank.service;
 
 import cn.edu.scut.sse.supply.bank.dao.BankContractDAO;
+import cn.edu.scut.sse.supply.bank.dao.BankTokenDAO;
 import cn.edu.scut.sse.supply.bank.dao.BankUserDAO;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankContract;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankUser;
@@ -17,6 +18,7 @@ import cn.edu.scut.sse.supply.util.SignVerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,19 +32,22 @@ import java.util.stream.Collectors;
 @Service
 public class BankService {
 
-    private BankUserDAO bankUserDAO;
     private static final int ENTERPRISE_CODE = 1001;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
+    private BankUserDAO bankUserDAO;
+    private BankTokenDAO bankTokenDAO;
     private BankContractDAO bankContractDAO;
     private EnterpriseDAO enterpriseDAO;
     private KeystoreDAO keystoreDAO;
 
     @Autowired
     public BankService(BankUserDAO bankUserDAO,
+                       BankTokenDAO bankTokenDAO,
                        BankContractDAO bankContractDAO,
                        EnterpriseDAO enterpriseDAO,
                        KeystoreDAO keystoreDAO) {
         this.bankUserDAO = bankUserDAO;
+        this.bankTokenDAO = bankTokenDAO;
         this.bankContractDAO = bankContractDAO;
         this.enterpriseDAO = enterpriseDAO;
         this.keystoreDAO = keystoreDAO;
@@ -332,6 +337,78 @@ public class BankService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部错误");
+        }
+    }
+
+    public ResponseResult setEnterpriseCredit(String token, int code, BigInteger credit) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return bankTokenDAO.setEnterpriseCredit(code, credit);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult getEnterpriseCredit(String token, int code) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return bankTokenDAO.getEnterpriseCredit(code);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult addEnterpriseToken(String token, int code, BigInteger val) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return bankTokenDAO.addEnterpriseToken(code, val);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult subEnterpriseToken(String token, int code, BigInteger val) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return bankTokenDAO.subEnterpriseToken(code, val);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult getEnterpriseToken(String token, int code) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return bankTokenDAO.getEnterpriseToken(code);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return bankTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
 

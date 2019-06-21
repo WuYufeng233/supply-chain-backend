@@ -1,7 +1,7 @@
 package cn.edu.scut.sse.supply.bank.dao;
 
-import cn.edu.scut.sse.supply.contracts.ContractRepo;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankContract;
+import cn.edu.scut.sse.supply.contracts.ContractRepo;
 import cn.edu.scut.sse.supply.general.entity.vo.DetailContractVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.util.ContractUtil;

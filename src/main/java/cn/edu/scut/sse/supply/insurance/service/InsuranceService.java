@@ -1,22 +1,24 @@
 package cn.edu.scut.sse.supply.insurance.service;
 
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
-import cn.edu.scut.sse.supply.insurance.dao.InsuranceContractDAO;
-import cn.edu.scut.sse.supply.insurance.dao.InsuranceUserDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
-import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceContract;
-import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceUser;
 import cn.edu.scut.sse.supply.general.entity.vo.ContractUploadResultVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ContractVO;
 import cn.edu.scut.sse.supply.general.entity.vo.DetailContractVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
+import cn.edu.scut.sse.supply.insurance.dao.InsuranceContractDAO;
+import cn.edu.scut.sse.supply.insurance.dao.InsuranceTokenDAO;
+import cn.edu.scut.sse.supply.insurance.dao.InsuranceUserDAO;
+import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceContract;
+import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceUser;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import cn.edu.scut.sse.supply.util.SignVerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,19 +32,22 @@ import java.util.stream.Collectors;
 @Service
 public class InsuranceService {
 
-    private InsuranceUserDAO insuranceUserDAO;
     private static final int ENTERPRISE_CODE = 3001;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
+    private InsuranceUserDAO insuranceUserDAO;
+    private InsuranceTokenDAO insuranceTokenDAO;
     private InsuranceContractDAO insuranceContractDAO;
     private EnterpriseDAO enterpriseDAO;
     private KeystoreDAO keystoreDAO;
 
     @Autowired
     public InsuranceService(InsuranceUserDAO insuranceUserDAO,
+                            InsuranceTokenDAO insuranceTokenDAO,
                             InsuranceContractDAO insuranceContractDAO,
                             EnterpriseDAO enterpriseDAO,
                             KeystoreDAO keystoreDAO) {
         this.insuranceUserDAO = insuranceUserDAO;
+        this.insuranceTokenDAO = insuranceTokenDAO;
         this.insuranceContractDAO = insuranceContractDAO;
         this.enterpriseDAO = enterpriseDAO;
         this.keystoreDAO = keystoreDAO;
@@ -331,6 +336,42 @@ public class InsuranceService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部错误");
+        }
+    }
+
+    public ResponseResult getEnterpriseCredit(String token) {
+        if (insuranceUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return insuranceTokenDAO.getEnterpriseCredit(ENTERPRISE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult getEnterpriseToken(String token) {
+        if (insuranceUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return insuranceTokenDAO.getEnterpriseToken(ENTERPRISE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val) {
+        if (insuranceUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return insuranceTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
 

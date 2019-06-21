@@ -1,6 +1,7 @@
 package cn.edu.scut.sse.supply.express.service;
 
 import cn.edu.scut.sse.supply.express.dao.ExpressContractDAO;
+import cn.edu.scut.sse.supply.express.dao.ExpressTokenDAO;
 import cn.edu.scut.sse.supply.express.dao.ExpressUserDAO;
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressContract;
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressUser;
@@ -17,6 +18,7 @@ import cn.edu.scut.sse.supply.util.SignVerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,19 +32,22 @@ import java.util.stream.Collectors;
 @Service
 public class ExpressService {
 
-    private ExpressUserDAO expressUserDAO;
     private static final int ENTERPRISE_CODE = 2001;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
+    private ExpressUserDAO expressUserDAO;
+    private ExpressTokenDAO expressTokenDAO;
     private ExpressContractDAO expressContractDAO;
     private EnterpriseDAO enterpriseDAO;
     private KeystoreDAO keystoreDAO;
 
     @Autowired
     public ExpressService(ExpressUserDAO expressUserDAO,
+                          ExpressTokenDAO expressTokenDAO,
                           ExpressContractDAO expressContractDAO,
                           EnterpriseDAO enterpriseDAO,
                           KeystoreDAO keystoreDAO) {
         this.expressUserDAO = expressUserDAO;
+        this.expressTokenDAO = expressTokenDAO;
         this.expressContractDAO = expressContractDAO;
         this.enterpriseDAO = enterpriseDAO;
         this.keystoreDAO = keystoreDAO;
@@ -333,6 +338,43 @@ public class ExpressService {
             return new ResponseResult().setCode(-11).setMsg("内部错误");
         }
     }
+
+    public ResponseResult getEnterpriseCredit(String token) {
+        if (expressUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return expressTokenDAO.getEnterpriseCredit(ENTERPRISE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult getEnterpriseToken(String token) {
+        if (expressUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return expressTokenDAO.getEnterpriseToken(ENTERPRISE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val) {
+        if (expressUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return expressTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
 
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()

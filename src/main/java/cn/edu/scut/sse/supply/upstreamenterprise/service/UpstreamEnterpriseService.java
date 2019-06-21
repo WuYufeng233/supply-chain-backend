@@ -2,21 +2,23 @@ package cn.edu.scut.sse.supply.upstreamenterprise.service;
 
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
-import cn.edu.scut.sse.supply.upstreamenterprise.dao.UpstreamEnterpriseContractDAO;
-import cn.edu.scut.sse.supply.upstreamenterprise.dao.UpstreamEnterpriseUserDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
-import cn.edu.scut.sse.supply.upstreamenterprise.entity.pojo.UpstreamEnterpriseContract;
-import cn.edu.scut.sse.supply.upstreamenterprise.entity.pojo.UpstreamEnterpriseUser;
 import cn.edu.scut.sse.supply.general.entity.vo.ContractUploadResultVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ContractVO;
 import cn.edu.scut.sse.supply.general.entity.vo.DetailContractVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
+import cn.edu.scut.sse.supply.upstreamenterprise.dao.UpstreamEnterpriseContractDAO;
+import cn.edu.scut.sse.supply.upstreamenterprise.dao.UpstreamEnterpriseTokenDAO;
+import cn.edu.scut.sse.supply.upstreamenterprise.dao.UpstreamEnterpriseUserDAO;
+import cn.edu.scut.sse.supply.upstreamenterprise.entity.pojo.UpstreamEnterpriseContract;
+import cn.edu.scut.sse.supply.upstreamenterprise.entity.pojo.UpstreamEnterpriseUser;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import cn.edu.scut.sse.supply.util.SignVerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,19 +32,22 @@ import java.util.stream.Collectors;
 @Service
 public class UpstreamEnterpriseService {
 
-    private UpstreamEnterpriseUserDAO upstreamEnterpriseUserDAO;
     private static final int ENTERPRISE_CODE = 4002;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
+    private UpstreamEnterpriseUserDAO upstreamEnterpriseUserDAO;
+    private UpstreamEnterpriseTokenDAO upstreamEnterpriseTokenDAO;
     private UpstreamEnterpriseContractDAO upstreamEnterpriseContractDAO;
     private EnterpriseDAO enterpriseDAO;
     private KeystoreDAO keystoreDAO;
 
     @Autowired
     public UpstreamEnterpriseService(UpstreamEnterpriseUserDAO upstreamEnterpriseUserDAO,
+                                     UpstreamEnterpriseTokenDAO upstreamEnterpriseTokenDAO,
                                      UpstreamEnterpriseContractDAO upstreamEnterpriseContractDAO,
                                      EnterpriseDAO enterpriseDAO,
                                      KeystoreDAO keystoreDAO) {
         this.upstreamEnterpriseUserDAO = upstreamEnterpriseUserDAO;
+        this.upstreamEnterpriseTokenDAO = upstreamEnterpriseTokenDAO;
         this.upstreamEnterpriseContractDAO = upstreamEnterpriseContractDAO;
         this.enterpriseDAO = enterpriseDAO;
         this.keystoreDAO = keystoreDAO;
@@ -331,6 +336,42 @@ public class UpstreamEnterpriseService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部错误");
+        }
+    }
+
+    public ResponseResult getEnterpriseCredit(String token) {
+        if (upstreamEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return upstreamEnterpriseTokenDAO.getEnterpriseCredit(ENTERPRISE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult getEnterpriseToken(String token) {
+        if (upstreamEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return upstreamEnterpriseTokenDAO.getEnterpriseToken(ENTERPRISE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val) {
+        if (upstreamEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return upstreamEnterpriseTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
 

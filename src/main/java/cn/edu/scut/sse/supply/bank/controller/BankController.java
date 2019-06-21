@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.math.BigInteger;
+
 /**
  * @author Yukino Yukinoshita
  */
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Controller
 public class BankController {
 
+    private static final int ENTERPRISE_CODE = 1001;
     private BankService bankService;
 
     @Autowired
@@ -91,6 +94,50 @@ public class BankController {
     public @ResponseBody
     ResponseResult updateContract(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
         return bankService.updateContract(token, fid, status);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/set-credit")
+    public @ResponseBody
+    ResponseResult setEnterpriseCredit(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger credit) {
+        return bankService.setEnterpriseCredit(token, code, credit);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/get-credit")
+    public @ResponseBody
+    ResponseResult getEnterpriseCredit(@RequestHeader("authorization") String token, @RequestParam(required = false) Integer code) {
+        if (code == null) {
+            return bankService.getEnterpriseCredit(token, ENTERPRISE_CODE);
+        } else {
+            return bankService.getEnterpriseCredit(token, code);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/add")
+    public @ResponseBody
+    ResponseResult addEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val) {
+        return bankService.addEnterpriseToken(token, code, val);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/sub")
+    public @ResponseBody
+    ResponseResult subEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val) {
+        return bankService.subEnterpriseToken(token, code, val);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/get")
+    public @ResponseBody
+    ResponseResult getEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam(required = false) Integer code) {
+        if (code == null) {
+            return bankService.getEnterpriseToken(token, ENTERPRISE_CODE);
+        } else {
+            return bankService.getEnterpriseToken(token, code);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/pay")
+    public @ResponseBody
+    ResponseResult payEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val) {
+        return bankService.payEnterpriseToken(token, code, val);
     }
 
     private boolean checkRepeatPassword(String s1, String s2) {

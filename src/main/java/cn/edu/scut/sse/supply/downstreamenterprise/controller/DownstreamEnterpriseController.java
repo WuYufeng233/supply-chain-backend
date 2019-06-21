@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.math.BigInteger;
+
 /**
  * @author Yukino Yukinoshita
  */
@@ -92,6 +94,25 @@ public class DownstreamEnterpriseController {
     ResponseResult updateContract(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
         return downstreamEnterpriseService.updateContract(token, fid, status);
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/get-credit")
+    public @ResponseBody
+    ResponseResult getEnterpriseCredit(@RequestHeader("authorization") String token) {
+        return downstreamEnterpriseService.getEnterpriseCredit(token);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/get")
+    public @ResponseBody
+    ResponseResult getEnterpriseToken(@RequestHeader("authorization") String token) {
+        return downstreamEnterpriseService.getEnterpriseToken(token);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/token/pay")
+    public @ResponseBody
+    ResponseResult payEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val) {
+        return downstreamEnterpriseService.payEnterpriseToken(token, code, val);
+    }
+
 
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {

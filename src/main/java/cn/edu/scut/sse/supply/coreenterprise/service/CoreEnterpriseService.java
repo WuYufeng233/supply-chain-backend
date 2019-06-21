@@ -1,11 +1,12 @@
 package cn.edu.scut.sse.supply.coreenterprise.service;
 
 import cn.edu.scut.sse.supply.coreenterprise.dao.CoreEnterpriseContractDAO;
+import cn.edu.scut.sse.supply.coreenterprise.dao.CoreEnterpriseTokenDAO;
 import cn.edu.scut.sse.supply.coreenterprise.dao.CoreEnterpriseUserDAO;
-import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
-import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseContract;
 import cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseUser;
+import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
+import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
 import cn.edu.scut.sse.supply.general.entity.vo.ContractUploadResultVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ContractVO;
@@ -17,6 +18,7 @@ import cn.edu.scut.sse.supply.util.SignVerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,20 +32,22 @@ import java.util.stream.Collectors;
 @Service
 public class CoreEnterpriseService {
 
+    private static final int ENTERPRISE_CODE = 4001;
+    private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private CoreEnterpriseUserDAO coreEnterpriseUserDAO;
+    private CoreEnterpriseTokenDAO coreEnterpriseTokenDAO;
     private CoreEnterpriseContractDAO coreEnterpriseContractDAO;
     private EnterpriseDAO enterpriseDAO;
     private KeystoreDAO keystoreDAO;
 
-    private static final int ENTERPRISE_CODE = 4001;
-    private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
-
     @Autowired
     public CoreEnterpriseService(CoreEnterpriseUserDAO coreEnterpriseUserDAO,
+                                 CoreEnterpriseTokenDAO coreEnterpriseTokenDAO,
                                  CoreEnterpriseContractDAO coreEnterpriseContractDAO,
                                  EnterpriseDAO enterpriseDAO,
                                  KeystoreDAO keystoreDAO) {
         this.coreEnterpriseUserDAO = coreEnterpriseUserDAO;
+        this.coreEnterpriseTokenDAO = coreEnterpriseTokenDAO;
         this.coreEnterpriseContractDAO = coreEnterpriseContractDAO;
         this.enterpriseDAO = enterpriseDAO;
         this.keystoreDAO = keystoreDAO;
@@ -334,6 +338,43 @@ public class CoreEnterpriseService {
             return new ResponseResult().setCode(-11).setMsg("内部错误");
         }
     }
+
+    public ResponseResult getEnterpriseCredit(String token) {
+        if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return coreEnterpriseTokenDAO.getEnterpriseCredit(ENTERPRISE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult getEnterpriseToken(String token) {
+        if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return coreEnterpriseTokenDAO.getEnterpriseToken(ENTERPRISE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
+    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val) {
+        if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return coreEnterpriseTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+    }
+
 
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()

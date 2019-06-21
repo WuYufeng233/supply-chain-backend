@@ -35,6 +35,13 @@ public class Keystore {
     }
 
     @Override
+    public int hashCode() {
+        int result = code != null ? code.hashCode() : 0;
+        result = 31 * result + (publicKey != null ? publicKey.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -45,12 +52,5 @@ public class Keystore {
         if (publicKey != null ? !publicKey.equals(keystore.publicKey) : keystore.publicKey != null) return false;
 
         return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = code != null ? code.hashCode() : 0;
-        result = 31 * result + (publicKey != null ? publicKey.hashCode() : 0);
-        return result;
     }
 }
