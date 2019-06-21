@@ -50,6 +50,8 @@
         <mapping resource="UpstreamEnterpriseContract.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.Keystore"/>
         <mapping resource="Keystore.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.TokenTransactionRecord"/>
+        <mapping resource="TokenTransactionRecord.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

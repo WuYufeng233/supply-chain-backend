@@ -6,13 +6,11 @@ import cn.edu.scut.sse.supply.bank.dao.BankUserDAO;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankContract;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankUser;
 import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseCreditVO;
+import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseTokenVO;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
-import cn.edu.scut.sse.supply.general.entity.vo.ContractUploadResultVO;
-import cn.edu.scut.sse.supply.general.entity.vo.ContractVO;
-import cn.edu.scut.sse.supply.general.entity.vo.DetailContractVO;
-import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
+import cn.edu.scut.sse.supply.general.entity.vo.*;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import cn.edu.scut.sse.supply.util.SignVerifyUtil;
@@ -431,16 +429,55 @@ public class BankService {
         }
     }
 
-    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val) {
+    public ResponseResult listEnterpriseToken(String token) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
+        List<EnterpriseTokenVO> enterpriseTokenVoList = enterpriseDAO.listEnterprise().stream()
+                .map(enterprise -> {
+                    EnterpriseTokenVO vo = new EnterpriseTokenVO();
+                    vo.setCode(enterprise.getCode());
+                    vo.setName(enterprise.getName());
+                    try {
+                        vo.setToken(bankTokenDAO.getEnterpriseToken(enterprise.getCode()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return vo;
+                })
+                .collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(enterpriseTokenVoList);
+    }
+
+    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val, Integer type, Integer id) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        ResponseResult result;
         try {
-            return bankTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
+            result = bankTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
+        if (result.getCode() != 0) {
+            return result;
+        }
+        String transactionHash = (String) result.getData();
+        if (type != null && id != null) {
+            enterpriseDAO.saveTokenTransaction(transactionHash, ENTERPRISE_CODE, code, val, type, id);
+        } else {
+            enterpriseDAO.saveTokenTransaction(transactionHash, ENTERPRISE_CODE, code, val);
+        }
+        return new ResponseResult().setCode(0).setMsg("支付成功").setData(transactionHash);
+    }
+
+    public ResponseResult listTokenTransaction(String token) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        List<TransactionRecordVO> list = enterpriseDAO.listTransactionRecord(ENTERPRISE_CODE);
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(list);
     }
 
     private boolean checkLegalEnterpriseType(int type) {

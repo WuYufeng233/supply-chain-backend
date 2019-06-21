@@ -109,10 +109,15 @@ public class DownstreamEnterpriseController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/token/pay")
     public @ResponseBody
-    ResponseResult payEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val) {
-        return downstreamEnterpriseService.payEnterpriseToken(token, code, val);
+    ResponseResult payEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val, @RequestParam(required = false) Integer type, @RequestParam(required = false) Integer id) {
+        return downstreamEnterpriseService.payEnterpriseToken(token, code, val, type, id);
     }
 
+    @RequestMapping("/token/list-transaction")
+    public @ResponseBody
+    ResponseResult listTokenTransaction(@RequestHeader("authorization") String token) {
+        return downstreamEnterpriseService.listTokenTransaction(token);
+    }
 
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {

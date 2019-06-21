@@ -3,10 +3,7 @@ package cn.edu.scut.sse.supply.insurance.service;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
-import cn.edu.scut.sse.supply.general.entity.vo.ContractUploadResultVO;
-import cn.edu.scut.sse.supply.general.entity.vo.ContractVO;
-import cn.edu.scut.sse.supply.general.entity.vo.DetailContractVO;
-import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
+import cn.edu.scut.sse.supply.general.entity.vo.*;
 import cn.edu.scut.sse.supply.insurance.dao.InsuranceContractDAO;
 import cn.edu.scut.sse.supply.insurance.dao.InsuranceTokenDAO;
 import cn.edu.scut.sse.supply.insurance.dao.InsuranceUserDAO;
@@ -363,16 +360,35 @@ public class InsuranceService {
         }
     }
 
-    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val) {
+    public ResponseResult payEnterpriseToken(String token, int code, BigInteger val, Integer type, Integer id) {
         if (insuranceUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
+        ResponseResult result;
         try {
-            return insuranceTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
+            result = insuranceTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
+        if (result.getCode() != 0) {
+            return result;
+        }
+        String transactionHash = (String) result.getData();
+        if (type != null && id != null) {
+            enterpriseDAO.saveTokenTransaction(transactionHash, ENTERPRISE_CODE, code, val, type, id);
+        } else {
+            enterpriseDAO.saveTokenTransaction(transactionHash, ENTERPRISE_CODE, code, val);
+        }
+        return new ResponseResult().setCode(0).setMsg("支付成功").setData(transactionHash);
+    }
+
+    public ResponseResult listTokenTransaction(String token) {
+        if (insuranceUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        List<TransactionRecordVO> list = enterpriseDAO.listTransactionRecord(ENTERPRISE_CODE);
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(list);
     }
 
     private boolean checkLegalEnterpriseType(int type) {
