@@ -4,6 +4,8 @@ import cn.edu.scut.sse.supply.general.entity.vo.KeyPairVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.general.service.MainService;
 import cn.edu.scut.sse.supply.util.RSAUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import java.security.KeyPair;
 public class MainController {
 
     private MainService mainService;
+    private final Logger logger = LoggerFactory.getLogger(MainController.class);
 
     @Autowired
     public MainController(MainService mainService) {
@@ -37,6 +40,7 @@ public class MainController {
     @RequestMapping(method = RequestMethod.POST, value = "/test-post")
     public @ResponseBody
     String testPost(@RequestParam String param) {
+        logger.debug("param = {}", param);
         return param;
     }
 

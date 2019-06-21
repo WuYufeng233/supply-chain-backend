@@ -3,6 +3,8 @@ package cn.edu.scut.sse.supply.general.controller;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.general.service.EnterpriseService;
 import cn.edu.scut.sse.supply.util.ContractUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class EnterpriseController {
 
+    private final Logger logger = LoggerFactory.getLogger(EnterpriseController.class);
     private EnterpriseService enterpriseService;
 
     @Autowired
@@ -34,6 +37,7 @@ public class EnterpriseController {
     @RequestMapping(method = RequestMethod.POST, value = "token/create")
     public @ResponseBody
     ResponseResult createTokenAccount(@RequestHeader("authorization") String token, int code, String name) {
+        logger.info("Create token account, token = {}, code = {}, name = {}", token, code, name);
         if (!ContractUtil.ENTERPRISE_TOKEN_ADDRESS.equals(token)) {
             return new ResponseResult().setCode(-10).setMsg("权限不足");
         }
@@ -43,6 +47,7 @@ public class EnterpriseController {
     @RequestMapping(method = RequestMethod.POST, value = "token/update")
     public @ResponseBody
     ResponseResult updateTokenAccount(@RequestHeader("authorization") String token, int code, String name) {
+        logger.info("Update token account, token = {}, code = {}, name = {}", token, code, name);
         if (!ContractUtil.ENTERPRISE_TOKEN_ADDRESS.equals(token)) {
             return new ResponseResult().setCode(-10).setMsg("权限不足");
         }
