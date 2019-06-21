@@ -37,11 +37,10 @@ public class BankTokenDAO {
         return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg);
     }
 
-    public ResponseResult getEnterpriseCredit(int code) throws Exception {
+    public BigInteger getEnterpriseCredit(int code) throws Exception {
         Web3j web3j = Web3jUtil.getWeb3j();
         EnterpriseToken enterpriseToken = EnterpriseToken.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
-        BigInteger credit = enterpriseToken.getCredit(BigInteger.valueOf(code)).send();
-        return new ResponseResult().setCode(0).setMsg("查询成功").setData(credit);
+        return enterpriseToken.getCredit(BigInteger.valueOf(code)).send();
     }
 
     public ResponseResult addEnterpriseToken(int code, BigInteger val) throws Exception {
@@ -68,11 +67,10 @@ public class BankTokenDAO {
         return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg);
     }
 
-    public ResponseResult getEnterpriseToken(int code) throws Exception {
+    public BigInteger getEnterpriseToken(int code) throws Exception {
         Web3j web3j = Web3jUtil.getWeb3j();
         EnterpriseToken enterpriseToken = EnterpriseToken.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
-        BigInteger token = enterpriseToken.getToken(BigInteger.valueOf(code)).send();
-        return new ResponseResult().setCode(0).setMsg("查询成功").setData(token);
+        return enterpriseToken.getToken(BigInteger.valueOf(code)).send();
     }
 
     public ResponseResult payEnterpriseToken(int source, int target, BigInteger val) throws Exception {

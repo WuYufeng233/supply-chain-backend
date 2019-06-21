@@ -112,6 +112,12 @@ public class BankController {
         }
     }
 
+    @RequestMapping("/token/list-credit")
+    public @ResponseBody
+    ResponseResult listEnterpriseCredit(@RequestHeader("authorization") String token) {
+        return bankService.listEnterpriseCredit(token);
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/token/add")
     public @ResponseBody
     ResponseResult addEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val) {

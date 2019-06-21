@@ -5,6 +5,7 @@ import cn.edu.scut.sse.supply.bank.dao.BankTokenDAO;
 import cn.edu.scut.sse.supply.bank.dao.BankUserDAO;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankContract;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankUser;
+import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseCreditVO;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
@@ -357,11 +358,36 @@ public class BankService {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
         try {
-            return bankTokenDAO.getEnterpriseCredit(code);
+            BigInteger val = bankTokenDAO.getEnterpriseCredit(code);
+            if (val == null) {
+                return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+            } else {
+                return new ResponseResult().setCode(0).setMsg("查询成功").setData(val);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
+    }
+
+    public ResponseResult listEnterpriseCredit(String token) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        List<EnterpriseCreditVO> enterpriseCreditVoList = enterpriseDAO.listEnterprise().stream()
+                .map(enterprise -> {
+                    EnterpriseCreditVO vo = new EnterpriseCreditVO();
+                    vo.setCode(enterprise.getCode());
+                    vo.setName(enterprise.getName());
+                    try {
+                        vo.setCredit(bankTokenDAO.getEnterpriseCredit(enterprise.getCode()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return vo;
+                })
+                .collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(enterpriseCreditVoList);
     }
 
     public ResponseResult addEnterpriseToken(String token, int code, BigInteger val) {
@@ -393,7 +419,12 @@ public class BankService {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
         try {
-            return bankTokenDAO.getEnterpriseToken(code);
+            BigInteger val = bankTokenDAO.getEnterpriseToken(code);
+            if (val == null) {
+                return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+            } else {
+                return new ResponseResult().setCode(0).setMsg("查询成功").setData(val);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
