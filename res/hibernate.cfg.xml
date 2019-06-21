@@ -52,6 +52,8 @@
         <mapping resource="Keystore.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.TokenTransactionRecord"/>
         <mapping resource="TokenTransactionRecord.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.bank.entity.pojo.BankApplication"/>
+        <mapping resource="BankApplication.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

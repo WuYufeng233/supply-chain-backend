@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="cn.edu.scut.sse.supply.bank.entity.pojo.BankApplication" table="bank_application"
+           schema="supply_chain">
+        <id name="fid">
+            <column name="fid" sql-type="int(11)"/>
+            <generator class="increment"/>
+        </id>
+        <property name="content">
+            <column name="content" sql-type="varchar(1024)" length="1024" not-null="true"/>
+        </property>
+        <property name="sponsor">
+            <column name="sponsor" sql-type="int(255)" not-null="true"/>
+        </property>
+        <property name="receiver">
+            <column name="receiver" sql-type="int(255)" not-null="true"/>
+        </property>
+        <property name="startDate">
+            <column name="start_date" sql-type="datetime" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

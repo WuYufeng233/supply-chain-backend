@@ -185,6 +185,30 @@ public class BankController {
         return bankService.getSignatureOfText(token, text);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/application/create")
+    public @ResponseBody
+    ResponseResult createApplication(@RequestParam String content, @RequestParam int type, @RequestParam int code, @RequestParam String signature) {
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/application/detail")
+    public @ResponseBody
+    ResponseResult getApplicationDetail(@RequestParam int fid) {
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/application/receive")
+    public @ResponseBody
+    ResponseResult receiveApplication(@RequestHeader("authorization") String token, @RequestParam int fid) {
+
+    }
+
+    @RequestMapping("/application/list")
+    public @ResponseBody
+    ResponseResult listApplication(@RequestHeader("authorization") String token) {
+
+    }
+
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {
             return false;
