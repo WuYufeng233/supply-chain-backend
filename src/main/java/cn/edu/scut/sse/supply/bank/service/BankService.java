@@ -625,6 +625,13 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(bankApplicationDAO.listBankApplication(code));
     }
 
+    public ResponseResult listApplication(String token) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(bankApplicationDAO.listBankApplication());
+    }
+
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()
                 .map(Enterprise::getCode).collect(Collectors.toList());

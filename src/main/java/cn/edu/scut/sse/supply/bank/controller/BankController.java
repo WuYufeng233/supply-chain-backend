@@ -215,6 +215,12 @@ public class BankController {
         return bankService.listApplication(code);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/application/list")
+    public @ResponseBody
+    ResponseResult listApplication(@RequestHeader("authorization") String token) {
+        return bankService.listApplication(token);
+    }
+
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {
             return false;
