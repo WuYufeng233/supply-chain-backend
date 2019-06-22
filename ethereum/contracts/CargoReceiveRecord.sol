@@ -17,7 +17,7 @@ contract CargoReceiveRecord {
     event createRecordEvent(int code, string msg);
     event getRecordCallback(string content, int consignor, uint contractId, uint insuranceId, uint expressId, uint time);
 
-    function createRecord(uint id, string content, int consignor, uint contractId, uint insuranceId, uint expressId){
+    function createRecord(uint id, string content, int consignor, uint contractId, uint insuranceId, uint expressId) public {
         if (records[id].time != 0) {
             emit createRecordEvent(- 1, "入库记录已存在");
             return;
@@ -26,7 +26,7 @@ contract CargoReceiveRecord {
         emit createRecordEvent(0, "创建入库记录成功");
     }
 
-    function getRecord(uint id){
+    function getRecord(uint id) public {
         emit getRecordCallback(records[id].content, records[id].consignor, records[id].contractId, records[id].insuranceId, records[id].expressId, records[id].time);
     }
 

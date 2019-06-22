@@ -56,7 +56,7 @@ contract ContractRepo {
         }
     }
 
-    function updateContractStatus(int id, uint code, string status){
+    function updateContractStatus(int id, uint code, string status) public {
         if (contracts[id].startTime == 0) {
             emit updateContractStatusEvent(- 1, "合同不存在");
             return;

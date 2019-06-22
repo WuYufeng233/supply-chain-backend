@@ -61,7 +61,7 @@ contract EnterpriseToken {
     }
 
     // 银行授信
-    function setCredit(uint code, uint credit){
+    function setCredit(uint code, uint credit) public {
         for (uint i = 0; i < enterpriseCodeList.length; ++i) {
             if (enterpriseCodeList[i] == code) {
                 break;
@@ -79,11 +79,11 @@ contract EnterpriseToken {
         for (uint i = 0; i < enterpriseCodeList.length; ++i) {
             if (enterpriseCodeList[i] == code) {
                 break;
-}
+            }
             if (i == enterpriseCodeList.length - 1) {
                 emit setCreditEvent(- 3, "企业不存在");
-}
             }
+        }
         enterpriseTokenMap[code].token += val;
         emit addTokenEvent(0, "Token增加成功");
     }
@@ -93,15 +93,15 @@ contract EnterpriseToken {
         for (uint i = 0; i < enterpriseCodeList.length; ++i) {
             if (enterpriseCodeList[i] == code) {
                 break;
-}
+            }
             if (i == enterpriseCodeList.length - 1) {
                 emit setCreditEvent(- 3, "企业不存在");
-}
             }
+        }
         if (enterpriseTokenMap[code].token < val) {
             emit subTokenEvent(- 5, "Token余额不足");
             return;
-            }
+        }
         enterpriseTokenMap[code].token -= val;
         emit subTokenEvent(0, "Token减少成功");
     }

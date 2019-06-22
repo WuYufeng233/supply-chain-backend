@@ -44,7 +44,7 @@ contract ExpressApplication {
         emit receiveApplicationEvent(0, "申请处理完成");
     }
 
-    function updateApplicationStatus(int id, string status){
+    function updateApplicationStatus(int id, string status) public {
         if (applications[id].startTime == 0) {
             emit updateApplicationStatusEvent(- 1, "申请不存在");
             return;
@@ -53,7 +53,7 @@ contract ExpressApplication {
         emit updateApplicationStatusEvent(0, "更新状态成功");
     }
 
-    function getApplication(int id){
+    function getApplication(int id) public {
         Application application = applications[id];
         emit getApplicationCallback(application.content, application.sponsor, application.receiver, application.sponsorSignature, application.receiverSignature, application.applicationType, application.startTime, application.status);
     }
