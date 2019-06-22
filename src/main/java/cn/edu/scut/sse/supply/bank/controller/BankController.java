@@ -188,25 +188,31 @@ public class BankController {
     @RequestMapping(method = RequestMethod.POST, value = "/application/create")
     public @ResponseBody
     ResponseResult createApplication(@RequestParam String content, @RequestParam int type, @RequestParam int code, @RequestParam String signature) {
-
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/application/detail")
-    public @ResponseBody
-    ResponseResult getApplicationDetail(@RequestParam int fid) {
-
+        return bankService.createBankApplication(content, type, code, signature);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/application/receive")
     public @ResponseBody
     ResponseResult receiveApplication(@RequestHeader("authorization") String token, @RequestParam int fid) {
-
+        return bankService.receiveBankApplication(token, fid);
     }
 
-    @RequestMapping("/application/list")
+    @RequestMapping(method = RequestMethod.POST, value = "/application/update")
     public @ResponseBody
-    ResponseResult listApplication(@RequestHeader("authorization") String token) {
+    ResponseResult updateApplicationStatus(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
+        return bankService.updateBankApplicationStatus(token, fid, status);
+    }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/application/detail")
+    public @ResponseBody
+    ResponseResult getApplicationDetail(@RequestParam int fid) {
+        return bankService.getBankApplicationDetail(fid);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/application/list")
+    public @ResponseBody
+    ResponseResult listApplication(@RequestParam int code) {
+        return bankService.listApplication(code);
     }
 
     private boolean checkRepeatPassword(String s1, String s2) {

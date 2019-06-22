@@ -19,6 +19,9 @@
         <property name="receiver">
             <column name="receiver" sql-type="int(255)" not-null="true"/>
         </property>
+        <property name="type">
+            <column name="type" sql-type="int(11)" not-null="true"/>
+        </property>
         <property name="startDate">
             <column name="start_date" sql-type="datetime" not-null="true"/>
         </property>

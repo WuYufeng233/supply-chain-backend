@@ -1,10 +1,13 @@
 package cn.edu.scut.sse.supply.bank.service;
 
+import cn.edu.scut.sse.supply.bank.dao.BankApplicationDAO;
 import cn.edu.scut.sse.supply.bank.dao.BankContractDAO;
 import cn.edu.scut.sse.supply.bank.dao.BankTokenDAO;
 import cn.edu.scut.sse.supply.bank.dao.BankUserDAO;
+import cn.edu.scut.sse.supply.bank.entity.pojo.BankApplication;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankContract;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankUser;
+import cn.edu.scut.sse.supply.bank.entity.vo.DetailBankApplicationVO;
 import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseCreditVO;
 import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseTokenVO;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
@@ -34,6 +37,7 @@ public class BankService {
     private static final int ENTERPRISE_CODE = 1001;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private BankUserDAO bankUserDAO;
+    private BankApplicationDAO bankApplicationDAO;
     private BankTokenDAO bankTokenDAO;
     private BankContractDAO bankContractDAO;
     private EnterpriseDAO enterpriseDAO;
@@ -41,11 +45,13 @@ public class BankService {
 
     @Autowired
     public BankService(BankUserDAO bankUserDAO,
+                       BankApplicationDAO bankApplicationDAO,
                        BankTokenDAO bankTokenDAO,
                        BankContractDAO bankContractDAO,
                        EnterpriseDAO enterpriseDAO,
                        KeystoreDAO keystoreDAO) {
         this.bankUserDAO = bankUserDAO;
+        this.bankApplicationDAO = bankApplicationDAO;
         this.bankTokenDAO = bankTokenDAO;
         this.bankContractDAO = bankContractDAO;
         this.enterpriseDAO = enterpriseDAO;
@@ -496,6 +502,102 @@ public class BankService {
         }
         String signature = SignVerifyUtil.sign(privateKey, text);
         return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
+    }
+
+    public ResponseResult createBankApplication(String content, int type, int code, String signature) {
+        if (!checkLegalEnterpriseType(code)) {
+            return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
+        }
+        BankApplication application = new BankApplication();
+        application.setContent(content);
+        application.setSponsor(code);
+        application.setReceiver(ENTERPRISE_CODE);
+        application.setType(type);
+        application.setStartDate(new Timestamp(System.currentTimeMillis()));
+        int fid = bankApplicationDAO.saveBankApplication(application);
+        try {
+            return bankApplicationDAO.saveBankApplicationToFisco(fid, content, code, ENTERPRISE_CODE, signature, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult receiveBankApplication(String token, int fid) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        BankApplication application = bankApplicationDAO.getBankApplication(fid);
+        String privateKey;
+        try {
+            privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误，未获得密钥");
+        }
+        String content = application.getContent().concat(String.valueOf(application.getType()));
+        String signature = SignVerifyUtil.sign(privateKey, content);
+        try {
+            return bankApplicationDAO.receiveBankApplicationToFisco(fid, signature);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult updateBankApplicationStatus(String token, int fid, String status) {
+        if (bankUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return bankApplicationDAO.updateBankApplicationStatusToFisco(fid, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult getBankApplicationDetail(int fid) {
+        DetailBankApplicationVO vo;
+        try {
+            vo = bankApplicationDAO.getBankApplicationFromFisco(fid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+        String content = vo.getContent().concat(String.valueOf(vo.getApplicationType()));
+        String sponsorPublicKey = keystoreDAO.getKeystore(vo.getSponsor()).getPublicKey();
+        String receiverPublicKey = keystoreDAO.getKeystore(vo.getReceiver()).getPublicKey();
+        try {
+            boolean sponsorVerify = SignVerifyUtil.verify(sponsorPublicKey, content, vo.getSponsorSignature());
+            if (sponsorVerify) {
+                vo.setSponsorVerify(1);
+            } else {
+                vo.setSponsorVerify(-1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            vo.setSponsorVerify(0);
+        }
+        try {
+            boolean receiverVerify = SignVerifyUtil.verify(receiverPublicKey, content, vo.getReceiverSignature());
+            if (receiverVerify) {
+                vo.setReceiverVerify(1);
+            } else {
+                vo.setReceiverVerify(-1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            vo.setReceiverVerify(0);
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
+    }
+
+    public ResponseResult listApplication(int code) {
+        if (!checkLegalEnterpriseType(code)) {
+            return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(bankApplicationDAO.listBankApplication(code));
     }
 
     private boolean checkLegalEnterpriseType(int type) {

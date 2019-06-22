@@ -15,6 +15,7 @@ public class BankApplication {
     private Integer sponsor;
     private Integer receiver;
     private Timestamp startDate;
+    private Integer type;
 
     @Id
     @Column(name = "fid", nullable = false)
@@ -54,6 +55,16 @@ public class BankApplication {
 
     public void setReceiver(Integer receiver) {
         this.receiver = receiver;
+    }
+
+    @Basic
+    @Column(name = "type", nullable = true)
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     @Basic
