@@ -364,6 +364,9 @@ public class CoreEnterpriseService {
         if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
+        if (val.compareTo(BigInteger.valueOf(0)) < 0) {
+            return new ResponseResult().setCode(-5).setMsg("金额不可为负值");
+        }
         ResponseResult result;
         try {
             result = coreEnterpriseTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);

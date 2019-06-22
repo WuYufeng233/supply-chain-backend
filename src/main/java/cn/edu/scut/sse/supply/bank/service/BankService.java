@@ -398,6 +398,9 @@ public class BankService {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
+        if (val.compareTo(BigInteger.valueOf(0)) < 0) {
+            return new ResponseResult().setCode(-5).setMsg("金额不可为负值");
+        }
         try {
             return bankTokenDAO.addEnterpriseToken(code, val);
         } catch (Exception e) {
@@ -409,6 +412,9 @@ public class BankService {
     public ResponseResult subEnterpriseToken(String token, int code, BigInteger val) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        if (val.compareTo(BigInteger.valueOf(0)) < 0) {
+            return new ResponseResult().setCode(-5).setMsg("金额不可为负值");
         }
         try {
             return bankTokenDAO.subEnterpriseToken(code, val);
@@ -458,6 +464,9 @@ public class BankService {
     public ResponseResult payEnterpriseToken(String token, int code, BigInteger val, Integer type, Integer id) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        if (val.compareTo(BigInteger.valueOf(0)) < 0) {
+            return new ResponseResult().setCode(-5).setMsg("金额不可为负值");
         }
         ResponseResult result;
         try {
