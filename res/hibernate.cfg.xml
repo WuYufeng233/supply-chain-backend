@@ -6,8 +6,10 @@
     <session-factory>
         <!-- 配置关于数据库连接的四个项：driverClass  url username password -->
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://134.175.176.173:3306/supply_chain?serverTimezone=UTC
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/supply_chain?serverTimezone=GMT%2B8&amp;characterEncoding=UTF-8
         </property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">kkk123456***</property>
 
         <!-- 连接池配置 -->
         <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider
@@ -71,14 +73,12 @@
         <mapping resource="InsuranceApplication.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.express.entity.pojo.ExpressApplication"/>
         <mapping resource="ExpressApplication.hbm.xml"/>
-        <mapping resource="CoreEnterpriseCargoReceive.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseCargoReceive"/>
-        <mapping
-                resource="DownstreamEnterpriseCargoReceive.hbm.xml"/>
+        <mapping resource="CoreEnterpriseCargoReceive.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.downstreamenterprise.entity.pojo.DownstreamEnterpriseCargoReceive"/>
-        <mapping
-                resource="UpstreamEnterpriseCargoReceive.hbm.xml"/>
+        <mapping resource="DownstreamEnterpriseCargoReceive.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.upstreamenterprise.entity.pojo.UpstreamEnterpriseCargoReceive"/>
+        <mapping resource="UpstreamEnterpriseCargoReceive.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>
