@@ -1,10 +1,13 @@
 package cn.edu.scut.sse.supply.express.service;
 
+import cn.edu.scut.sse.supply.express.dao.ExpressApplicationDAO;
 import cn.edu.scut.sse.supply.express.dao.ExpressContractDAO;
 import cn.edu.scut.sse.supply.express.dao.ExpressTokenDAO;
 import cn.edu.scut.sse.supply.express.dao.ExpressUserDAO;
+import cn.edu.scut.sse.supply.express.entity.pojo.ExpressApplication;
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressContract;
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressUser;
+import cn.edu.scut.sse.supply.express.entity.vo.DetailExpressApplicationVO;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
@@ -32,6 +35,7 @@ public class ExpressService {
     private static final int ENTERPRISE_CODE = 2001;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private ExpressUserDAO expressUserDAO;
+    private ExpressApplicationDAO expressApplicationDAO;
     private ExpressTokenDAO expressTokenDAO;
     private ExpressContractDAO expressContractDAO;
     private EnterpriseDAO enterpriseDAO;
@@ -39,11 +43,13 @@ public class ExpressService {
 
     @Autowired
     public ExpressService(ExpressUserDAO expressUserDAO,
+                          ExpressApplicationDAO expressApplicationDAO,
                           ExpressTokenDAO expressTokenDAO,
                           ExpressContractDAO expressContractDAO,
                           EnterpriseDAO enterpriseDAO,
                           KeystoreDAO keystoreDAO) {
         this.expressUserDAO = expressUserDAO;
+        this.expressApplicationDAO = expressApplicationDAO;
         this.expressTokenDAO = expressTokenDAO;
         this.expressContractDAO = expressContractDAO;
         this.enterpriseDAO = enterpriseDAO;
@@ -412,6 +418,102 @@ public class ExpressService {
         return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
     }
 
+    public ResponseResult createExpressApplication(String content, int type, int code, String signature) {
+        if (!checkLegalEnterpriseType(code)) {
+            return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
+        }
+        ExpressApplication application = new ExpressApplication();
+        application.setContent(content);
+        application.setSponsor(code);
+        application.setReceiver(ENTERPRISE_CODE);
+        application.setType(type);
+        application.setStartDate(new Timestamp(System.currentTimeMillis()));
+        int fid = expressApplicationDAO.saveExpressApplication(application);
+        try {
+            return expressApplicationDAO.saveExpressApplicationToFisco(fid, content, code, ENTERPRISE_CODE, signature, type).setData(fid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult receiveExpressApplication(String token, int fid) {
+        if (expressUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        ExpressApplication application = expressApplicationDAO.getExpressApplication(fid);
+        String privateKey;
+        try {
+            privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误，未获得密钥");
+        }
+        String content = application.getContent().concat(String.valueOf(application.getType()));
+        String signature = SignVerifyUtil.sign(privateKey, content);
+        try {
+            return expressApplicationDAO.receiveExpressApplicationToFisco(fid, signature);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult updateExpressApplicationStatus(String token, int fid, String status) {
+        if (expressUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return expressApplicationDAO.updateExpressApplicationStatusToFisco(fid, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult getExpressApplicationDetail(int fid) {
+        DetailExpressApplicationVO vo;
+        try {
+            vo = expressApplicationDAO.getExpressApplicationFromFisco(fid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+        String content = vo.getContent().concat(String.valueOf(vo.getApplicationType()));
+        String sponsorPublicKey = keystoreDAO.getKeystore(vo.getSponsor()).getPublicKey();
+        String receiverPublicKey = keystoreDAO.getKeystore(vo.getReceiver()).getPublicKey();
+        try {
+            boolean sponsorVerify = SignVerifyUtil.verify(sponsorPublicKey, content, vo.getSponsorSignature());
+            if (sponsorVerify) {
+                vo.setSponsorVerify(1);
+            } else {
+                vo.setSponsorVerify(-1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            vo.setSponsorVerify(0);
+        }
+        try {
+            boolean receiverVerify = SignVerifyUtil.verify(receiverPublicKey, content, vo.getReceiverSignature());
+            if (receiverVerify) {
+                vo.setReceiverVerify(1);
+            } else {
+                vo.setReceiverVerify(-1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            vo.setReceiverVerify(0);
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
+    }
+
+    public ResponseResult listApplication(int code) {
+        if (!checkLegalEnterpriseType(code)) {
+            return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(expressApplicationDAO.listExpressApplication(code));
+    }
+    
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()
                 .map(Enterprise::getCode).collect(Collectors.toList());
