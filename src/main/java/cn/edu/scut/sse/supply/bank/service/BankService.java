@@ -394,34 +394,50 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(enterpriseCreditVoList);
     }
 
-    public ResponseResult addEnterpriseToken(String token, int code, BigInteger val) {
+    public ResponseResult addEnterpriseToken(String token, int code, BigInteger val, Integer type, Integer id) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
         if (val.compareTo(BigInteger.valueOf(0)) < 0) {
             return new ResponseResult().setCode(-5).setMsg("金额不可为负值");
         }
+        ResponseResult result;
         try {
-            return bankTokenDAO.addEnterpriseToken(code, val);
+            result = bankTokenDAO.addEnterpriseToken(code, val);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
+        String transactionHash = (String) result.getData();
+        if (type != null && id != null) {
+            enterpriseDAO.saveTokenTransaction(transactionHash, ENTERPRISE_CODE, code, val, type, id);
+        } else {
+            enterpriseDAO.saveTokenTransaction(transactionHash, ENTERPRISE_CODE, code, val);
+        }
+        return result;
     }
 
-    public ResponseResult subEnterpriseToken(String token, int code, BigInteger val) {
+    public ResponseResult subEnterpriseToken(String token, int code, BigInteger val, Integer type, Integer id) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
         if (val.compareTo(BigInteger.valueOf(0)) < 0) {
             return new ResponseResult().setCode(-5).setMsg("金额不可为负值");
         }
+        ResponseResult result;
         try {
-            return bankTokenDAO.subEnterpriseToken(code, val);
+            result = bankTokenDAO.subEnterpriseToken(code, val);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
+        String transactionHash = (String) result.getData();
+        if (type != null && id != null) {
+            enterpriseDAO.saveTokenTransaction(transactionHash, code, ENTERPRISE_CODE, val, type, id);
+        } else {
+            enterpriseDAO.saveTokenTransaction(transactionHash, code, ENTERPRISE_CODE, val);
+        }
+        return result;
     }
 
     public ResponseResult getEnterpriseToken(String token, int code) {

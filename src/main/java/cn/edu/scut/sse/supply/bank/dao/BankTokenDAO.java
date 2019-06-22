@@ -52,7 +52,7 @@ public class BankTokenDAO {
             return new ResponseResult().setCode(-6).setMsg("未获得返回消息");
         }
         EnterpriseToken.AddTokenEventEventResponse response = list.get(0);
-        return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg);
+        return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg).setData(receipt.getTransactionHash());
     }
 
     public ResponseResult subEnterpriseToken(int code, BigInteger val) throws Exception {
@@ -64,7 +64,7 @@ public class BankTokenDAO {
             return new ResponseResult().setCode(-6).setMsg("未获得返回消息");
         }
         EnterpriseToken.SubTokenEventEventResponse response = list.get(0);
-        return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg);
+        return new ResponseResult().setCode(response.code.intValue()).setMsg(response.msg).setData(receipt.getTransactionHash());
     }
 
     public BigInteger getEnterpriseToken(int code) throws Exception {
