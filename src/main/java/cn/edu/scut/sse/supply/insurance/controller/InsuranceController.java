@@ -125,6 +125,36 @@ public class InsuranceController {
         return insuranceService.getSignatureOfText(token, text);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/application/create")
+    public @ResponseBody
+    ResponseResult createApplication(@RequestParam String content, @RequestParam int type, @RequestParam int code, @RequestParam String signature) {
+        return insuranceService.createInsuranceApplication(content, type, code, signature);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/application/receive")
+    public @ResponseBody
+    ResponseResult receiveApplication(@RequestHeader("authorization") String token, @RequestParam int fid) {
+        return insuranceService.receiveInsuranceApplication(token, fid);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/application/update")
+    public @ResponseBody
+    ResponseResult updateApplicationStatus(@RequestHeader("authorization") String token, @RequestParam int fid, @RequestParam String status) {
+        return insuranceService.updateInsuranceApplicationStatus(token, fid, status);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/application/detail")
+    public @ResponseBody
+    ResponseResult getApplicationDetail(@RequestParam int fid) {
+        return insuranceService.getInsuranceApplicationDetail(fid);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/application/list")
+    public @ResponseBody
+    ResponseResult listApplication(@RequestParam int code) {
+        return insuranceService.listApplication(code);
+    }
+
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {
             return false;

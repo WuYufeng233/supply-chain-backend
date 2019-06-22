@@ -1,6 +1,6 @@
 pragma solidity ^0.4.0;
 
-contract BankApplication {
+contract InsuranceApplication {
 
     struct Application {
         int id;
@@ -9,7 +9,7 @@ contract BankApplication {
         uint receiver;
         string sponsorSignature;
         string receiverSignature;
-        int applicationType; // 2 - 兑付, 3 - 赎回, 4 - 贷款
+        int applicationType; // 5 - 运输保险, 6 - 货物保险, 7 - 预留
         uint startTime;
         string status;
     }

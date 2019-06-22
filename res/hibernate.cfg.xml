@@ -69,6 +69,8 @@
         <mapping resource="TokenTransactionRecord.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.bank.entity.pojo.BankApplication"/>
         <mapping resource="BankApplication.hbm.xml"/>
+        <mapping resource="InsuranceApplication.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceApplication"/>
 
     </session-factory>
 </hibernate-configuration>

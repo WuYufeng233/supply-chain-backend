@@ -4,11 +4,14 @@ import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
 import cn.edu.scut.sse.supply.general.entity.vo.*;
+import cn.edu.scut.sse.supply.insurance.dao.InsuranceApplicationDAO;
 import cn.edu.scut.sse.supply.insurance.dao.InsuranceContractDAO;
 import cn.edu.scut.sse.supply.insurance.dao.InsuranceTokenDAO;
 import cn.edu.scut.sse.supply.insurance.dao.InsuranceUserDAO;
+import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceApplication;
 import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceContract;
 import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceUser;
+import cn.edu.scut.sse.supply.insurance.entity.vo.DetailInsuranceApplicationVO;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import cn.edu.scut.sse.supply.util.SignVerifyUtil;
@@ -32,6 +35,7 @@ public class InsuranceService {
     private static final int ENTERPRISE_CODE = 3001;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private InsuranceUserDAO insuranceUserDAO;
+    private InsuranceApplicationDAO insuranceApplicationDAO;
     private InsuranceTokenDAO insuranceTokenDAO;
     private InsuranceContractDAO insuranceContractDAO;
     private EnterpriseDAO enterpriseDAO;
@@ -39,11 +43,13 @@ public class InsuranceService {
 
     @Autowired
     public InsuranceService(InsuranceUserDAO insuranceUserDAO,
+                            InsuranceApplicationDAO insuranceApplicationDAO,
                             InsuranceTokenDAO insuranceTokenDAO,
                             InsuranceContractDAO insuranceContractDAO,
                             EnterpriseDAO enterpriseDAO,
                             KeystoreDAO keystoreDAO) {
         this.insuranceUserDAO = insuranceUserDAO;
+        this.insuranceApplicationDAO = insuranceApplicationDAO;
         this.insuranceTokenDAO = insuranceTokenDAO;
         this.insuranceContractDAO = insuranceContractDAO;
         this.enterpriseDAO = enterpriseDAO;
@@ -412,6 +418,102 @@ public class InsuranceService {
         return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
     }
 
+    public ResponseResult createInsuranceApplication(String content, int type, int code, String signature) {
+        if (!checkLegalEnterpriseType(code)) {
+            return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
+        }
+        InsuranceApplication application = new InsuranceApplication();
+        application.setContent(content);
+        application.setSponsor(code);
+        application.setReceiver(ENTERPRISE_CODE);
+        application.setType(type);
+        application.setStartDate(new Timestamp(System.currentTimeMillis()));
+        int fid = insuranceApplicationDAO.saveInsuranceApplication(application);
+        try {
+            return insuranceApplicationDAO.saveInsuranceApplicationToFisco(fid, content, code, ENTERPRISE_CODE, signature, type).setData(fid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult receiveInsuranceApplication(String token, int fid) {
+        if (insuranceUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        InsuranceApplication application = insuranceApplicationDAO.getInsuranceApplication(fid);
+        String privateKey;
+        try {
+            privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误，未获得密钥");
+        }
+        String content = application.getContent().concat(String.valueOf(application.getType()));
+        String signature = SignVerifyUtil.sign(privateKey, content);
+        try {
+            return insuranceApplicationDAO.receiveInsuranceApplicationToFisco(fid, signature);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult updateInsuranceApplicationStatus(String token, int fid, String status) {
+        if (insuranceUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        try {
+            return insuranceApplicationDAO.updateInsuranceApplicationStatusToFisco(fid, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+    }
+
+    public ResponseResult getInsuranceApplicationDetail(int fid) {
+        DetailInsuranceApplicationVO vo;
+        try {
+            vo = insuranceApplicationDAO.getInsuranceApplicationFromFisco(fid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
+        }
+        String content = vo.getContent().concat(String.valueOf(vo.getApplicationType()));
+        String sponsorPublicKey = keystoreDAO.getKeystore(vo.getSponsor()).getPublicKey();
+        String receiverPublicKey = keystoreDAO.getKeystore(vo.getReceiver()).getPublicKey();
+        try {
+            boolean sponsorVerify = SignVerifyUtil.verify(sponsorPublicKey, content, vo.getSponsorSignature());
+            if (sponsorVerify) {
+                vo.setSponsorVerify(1);
+            } else {
+                vo.setSponsorVerify(-1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            vo.setSponsorVerify(0);
+        }
+        try {
+            boolean receiverVerify = SignVerifyUtil.verify(receiverPublicKey, content, vo.getReceiverSignature());
+            if (receiverVerify) {
+                vo.setReceiverVerify(1);
+            } else {
+                vo.setReceiverVerify(-1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            vo.setReceiverVerify(0);
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
+    }
+
+    public ResponseResult listApplication(int code) {
+        if (!checkLegalEnterpriseType(code)) {
+            return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(insuranceApplicationDAO.listInsuranceApplication(code));
+    }
+    
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()
                 .map(Enterprise::getCode).collect(Collectors.toList());
