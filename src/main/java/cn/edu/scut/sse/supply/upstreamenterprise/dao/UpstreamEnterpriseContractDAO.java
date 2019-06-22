@@ -35,7 +35,6 @@ public class UpstreamEnterpriseContractDAO {
     private BigInteger gasLimit = new BigInteger("300000000");
     private Credentials credentials = Credentials.create("b33405550c96ef5ae7d7d9a6b323fa739277bb469546db96c1e2e5690ea871fe");
     private String address = ContractUtil.CONTRACT_REPO_ADDRESS;
-    private final int ENTERPRISE_CODE = 4002;
 
     public void saveContract(UpstreamEnterpriseContract contract) {
         Session session = SessionFactoryUtil.getSessionFactoryInstance().openSession();
@@ -104,8 +103,7 @@ public class UpstreamEnterpriseContractDAO {
     public DetailContractVO getContractFromFisco(int fid) throws Exception {
         Web3j web3j = Web3jUtil.getWeb3j();
         ContractRepo contractRepo = ContractRepo.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
-        BigInteger contractId = new BigInteger(String.valueOf(ENTERPRISE_CODE).concat(String.valueOf(fid)));
-        TransactionReceipt receipt = contractRepo.getContract(contractId).send();
+        TransactionReceipt receipt = contractRepo.getContract(BigInteger.valueOf(fid)).send();
         List<ContractRepo.GetContractCallbackEventResponse> list = contractRepo.getGetContractCallbackEvents(receipt);
         if (list.size() == 0) {
             return null;
@@ -128,8 +126,7 @@ public class UpstreamEnterpriseContractDAO {
         Web3j web3j = Web3jUtil.getWeb3j();
         ContractRepo contractRepo = ContractRepo.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
 
-        BigInteger contractId = new BigInteger(String.valueOf(ENTERPRISE_CODE).concat(String.valueOf(upstreamEnterpriseContract.getFid())));
-        TransactionReceipt receipt = contractRepo.launchContract(contractId,
+        TransactionReceipt receipt = contractRepo.launchContract(BigInteger.valueOf(upstreamEnterpriseContract.getFid()),
                 upstreamEnterpriseContract.getHash(), BigInteger.valueOf(upstreamEnterpriseContract.getSponsor()),
                 BigInteger.valueOf(upstreamEnterpriseContract.getReceiver()), sponsorSignature).send();
         List<ContractRepo.LaunchContractEventEventResponse> list = contractRepo.getLaunchContractEventEvents(receipt);
@@ -144,8 +141,7 @@ public class UpstreamEnterpriseContractDAO {
         Web3j web3j = Web3jUtil.getWeb3j();
         ContractRepo contractRepo = ContractRepo.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
 
-        BigInteger contractId = new BigInteger(String.valueOf(ENTERPRISE_CODE).concat(String.valueOf(fid)));
-        TransactionReceipt receipt = contractRepo.receiveContract(contractId, BigInteger.valueOf(code), signature).send();
+        TransactionReceipt receipt = contractRepo.receiveContract(BigInteger.valueOf(fid), BigInteger.valueOf(code), signature).send();
         List<ContractRepo.ReceiveContractEventEventResponse> list = contractRepo.getReceiveContractEventEvents(receipt);
         if (list.size() == 0) {
             return new ResponseResult().setCode(-6).setMsg("未获得返回消息");
@@ -158,8 +154,7 @@ public class UpstreamEnterpriseContractDAO {
         Web3j web3j = Web3jUtil.getWeb3j();
         ContractRepo contractRepo = ContractRepo.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
 
-        BigInteger contractId = new BigInteger(String.valueOf(ENTERPRISE_CODE).concat(String.valueOf(fid)));
-        TransactionReceipt receipt = contractRepo.updateContractStatus(contractId, BigInteger.valueOf(enterpriseCode), status).send();
+        TransactionReceipt receipt = contractRepo.updateContractStatus(BigInteger.valueOf(fid), BigInteger.valueOf(enterpriseCode), status).send();
         List<ContractRepo.UpdateContractStatusEventEventResponse> list = contractRepo.getUpdateContractStatusEventEvents(receipt);
         if (list.size() == 0) {
             return new ResponseResult().setCode(-6).setMsg("未获得返回消息");
