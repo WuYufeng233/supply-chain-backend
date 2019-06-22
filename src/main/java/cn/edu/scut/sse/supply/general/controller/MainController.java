@@ -44,14 +44,11 @@ public class MainController {
         return param;
     }
 
-    @RequestMapping(value = "/helloworld/get")
+    @RequestMapping("/test/path")
     public @ResponseBody
-    String get() {
-        try {
-            return mainService.get();
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+    ResponseResult testPath(@RequestParam String path) {
+        File file = new File(path);
+        return new ResponseResult().setCode(0).setMsg(file.exists() + "-" + file.getAbsolutePath());
     }
 
     @RequestMapping(value = "/get/blocknumber")
@@ -59,16 +56,6 @@ public class MainController {
     String getBlockNumber() {
         try {
             return mainService.getBlockNumber();
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/helloworld/set")
-    public @ResponseBody
-    String set(@RequestParam String val) {
-        try {
-            return mainService.set(val);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -82,13 +69,6 @@ public class MainController {
         vo.setPrivateKey(RSAUtil.convertPrivateKey(keyPair.getPrivate()));
         vo.setPublicKey(RSAUtil.convertPublicKey(keyPair.getPublic()));
         return new ResponseResult().setCode(0).setMsg("生成成功").setData(vo);
-    }
-
-    @RequestMapping("/test/path")
-    public @ResponseBody
-    ResponseResult testPath(@RequestParam String path) {
-        File file = new File(path);
-        return new ResponseResult().setCode(0).setMsg(file.exists() + "-" + file.getAbsolutePath());
     }
 
 }

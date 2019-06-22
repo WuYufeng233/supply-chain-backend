@@ -35,8 +35,6 @@
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
         <!-- 配置hibernate的映射文件所在的位置 -->
-        <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.User"/>
-        <mapping resource="User.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.Enterprise"/>
         <mapping resource="Enterprise.hbm.xml"/>
         <mapping class="cn.edu.scut.sse.supply.bank.entity.pojo.BankUser"/>
