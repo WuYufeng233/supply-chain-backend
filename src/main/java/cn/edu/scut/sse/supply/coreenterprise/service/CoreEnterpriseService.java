@@ -1,10 +1,14 @@
 package cn.edu.scut.sse.supply.coreenterprise.service;
 
+import cn.edu.scut.sse.supply.coreenterprise.dao.CoreEnterpriseCargoDAO;
 import cn.edu.scut.sse.supply.coreenterprise.dao.CoreEnterpriseContractDAO;
 import cn.edu.scut.sse.supply.coreenterprise.dao.CoreEnterpriseTokenDAO;
 import cn.edu.scut.sse.supply.coreenterprise.dao.CoreEnterpriseUserDAO;
+import cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseCargoReceive;
 import cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseContract;
 import cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseUser;
+import cn.edu.scut.sse.supply.coreenterprise.entity.vo.CargoResponseVO;
+import cn.edu.scut.sse.supply.coreenterprise.entity.vo.DetailCargoVO;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
@@ -32,6 +36,7 @@ public class CoreEnterpriseService {
     private static final int ENTERPRISE_CODE = 4001;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private CoreEnterpriseUserDAO coreEnterpriseUserDAO;
+    private CoreEnterpriseCargoDAO coreEnterpriseCargoDAO;
     private CoreEnterpriseTokenDAO coreEnterpriseTokenDAO;
     private CoreEnterpriseContractDAO coreEnterpriseContractDAO;
     private EnterpriseDAO enterpriseDAO;
@@ -39,11 +44,13 @@ public class CoreEnterpriseService {
 
     @Autowired
     public CoreEnterpriseService(CoreEnterpriseUserDAO coreEnterpriseUserDAO,
+                                 CoreEnterpriseCargoDAO coreEnterpriseCargoDAO,
                                  CoreEnterpriseTokenDAO coreEnterpriseTokenDAO,
                                  CoreEnterpriseContractDAO coreEnterpriseContractDAO,
                                  EnterpriseDAO enterpriseDAO,
                                  KeystoreDAO keystoreDAO) {
         this.coreEnterpriseUserDAO = coreEnterpriseUserDAO;
+        this.coreEnterpriseCargoDAO = coreEnterpriseCargoDAO;
         this.coreEnterpriseTokenDAO = coreEnterpriseTokenDAO;
         this.coreEnterpriseContractDAO = coreEnterpriseContractDAO;
         this.enterpriseDAO = enterpriseDAO;
@@ -410,6 +417,51 @@ public class CoreEnterpriseService {
         }
         String signature = SignVerifyUtil.sign(privateKey, text);
         return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
+    }
+
+    public ResponseResult saveCargo(String token, String content, int consignor, Integer contractId, Integer expressId, Integer insuranceId) {
+        if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        CoreEnterpriseCargoReceive cargoReceive = new CoreEnterpriseCargoReceive();
+        cargoReceive.setContent(content);
+        cargoReceive.setConsignor(consignor);
+        cargoReceive.setTime(new Timestamp(System.currentTimeMillis()));
+        coreEnterpriseCargoDAO.saveCargo(cargoReceive);
+        try {
+            return coreEnterpriseCargoDAO.saveCargoToFisco(cargoReceive.getId(), content, consignor, contractId, insuranceId, expressId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部状态错误");
+        }
+    }
+
+    public ResponseResult listCargo(String token) {
+        if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(coreEnterpriseCargoDAO.listCargo());
+    }
+
+    public ResponseResult getCargo(String token, int id) {
+        if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        DetailCargoVO cargoVO;
+        try {
+            cargoVO = coreEnterpriseCargoDAO.getCargoFromFisco(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部状态错误");
+        }
+        CargoResponseVO vo = CargoResponseVO.from(cargoVO);
+        String consignor = EnterpriseUtil.getEnterpriseNameByCode(cargoVO.getConsignor());
+        if (consignor == null) {
+            consignor = enterpriseDAO.getEnterpriseByCode(cargoVO.getConsignor()).getName();
+            EnterpriseUtil.putCodeName(cargoVO.getConsignor(), consignor);
+        }
+        vo.setConsignor(consignor);
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
     }
 
     private boolean checkLegalEnterpriseType(int type) {

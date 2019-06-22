@@ -1,10 +1,14 @@
 package cn.edu.scut.sse.supply.downstreamenterprise.service;
 
+import cn.edu.scut.sse.supply.downstreamenterprise.dao.DownstreamEnterpriseCargoDAO;
 import cn.edu.scut.sse.supply.downstreamenterprise.dao.DownstreamEnterpriseContractDAO;
 import cn.edu.scut.sse.supply.downstreamenterprise.dao.DownstreamEnterpriseTokenDAO;
 import cn.edu.scut.sse.supply.downstreamenterprise.dao.DownstreamEnterpriseUserDAO;
+import cn.edu.scut.sse.supply.downstreamenterprise.entity.pojo.DownstreamEnterpriseCargoReceive;
 import cn.edu.scut.sse.supply.downstreamenterprise.entity.pojo.DownstreamEnterpriseContract;
 import cn.edu.scut.sse.supply.downstreamenterprise.entity.pojo.DownstreamEnterpriseUser;
+import cn.edu.scut.sse.supply.downstreamenterprise.entity.vo.CargoResponseVO;
+import cn.edu.scut.sse.supply.downstreamenterprise.entity.vo.DetailCargoVO;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
@@ -32,6 +36,7 @@ public class DownstreamEnterpriseService {
     private static final int ENTERPRISE_CODE = 4003;
     private static final String PRIVATE_KEY_PATH = "../webapps/api/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private DownstreamEnterpriseUserDAO downstreamEnterpriseUserDAO;
+    private DownstreamEnterpriseCargoDAO downstreamEnterpriseCargoDAO;
     private DownstreamEnterpriseTokenDAO downstreamEnterpriseTokenDAO;
     private DownstreamEnterpriseContractDAO downstreamEnterpriseContractDAO;
     private EnterpriseDAO enterpriseDAO;
@@ -39,11 +44,13 @@ public class DownstreamEnterpriseService {
 
     @Autowired
     public DownstreamEnterpriseService(DownstreamEnterpriseUserDAO downstreamEnterpriseUserDAO,
+                                       DownstreamEnterpriseCargoDAO downstreamEnterpriseCargoDAO,
                                        DownstreamEnterpriseTokenDAO downstreamEnterpriseTokenDAO,
                                        DownstreamEnterpriseContractDAO downstreamEnterpriseContractDAO,
                                        EnterpriseDAO enterpriseDAO,
                                        KeystoreDAO keystoreDAO) {
         this.downstreamEnterpriseUserDAO = downstreamEnterpriseUserDAO;
+        this.downstreamEnterpriseCargoDAO = downstreamEnterpriseCargoDAO;
         this.downstreamEnterpriseTokenDAO = downstreamEnterpriseTokenDAO;
         this.downstreamEnterpriseContractDAO = downstreamEnterpriseContractDAO;
         this.enterpriseDAO = enterpriseDAO;
@@ -412,6 +419,51 @@ public class DownstreamEnterpriseService {
         return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
     }
 
+    public ResponseResult saveCargo(String token, String content, int consignor, Integer contractId, Integer expressId, Integer insuranceId) {
+        if (downstreamEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        DownstreamEnterpriseCargoReceive cargoReceive = new DownstreamEnterpriseCargoReceive();
+        cargoReceive.setContent(content);
+        cargoReceive.setConsignor(consignor);
+        cargoReceive.setTime(new Timestamp(System.currentTimeMillis()));
+        downstreamEnterpriseCargoDAO.saveCargo(cargoReceive);
+        try {
+            return downstreamEnterpriseCargoDAO.saveCargoToFisco(cargoReceive.getId(), content, consignor, contractId, insuranceId, expressId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部状态错误");
+        }
+    }
+
+    public ResponseResult listCargo(String token) {
+        if (downstreamEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(downstreamEnterpriseCargoDAO.listCargo());
+    }
+
+    public ResponseResult getCargo(String token, int id) {
+        if (downstreamEnterpriseUserDAO.getUserByToken(token) == null) {
+            return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
+        }
+        DetailCargoVO cargoVO;
+        try {
+            cargoVO = downstreamEnterpriseCargoDAO.getCargoFromFisco(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult().setCode(-11).setMsg("服务器内部状态错误");
+        }
+        CargoResponseVO vo = CargoResponseVO.from(cargoVO);
+        String consignor = EnterpriseUtil.getEnterpriseNameByCode(cargoVO.getConsignor());
+        if (consignor == null) {
+            consignor = enterpriseDAO.getEnterpriseByCode(cargoVO.getConsignor()).getName();
+            EnterpriseUtil.putCodeName(cargoVO.getConsignor(), consignor);
+        }
+        vo.setConsignor(consignor);
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
+    }
+    
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()
                 .map(Enterprise::getCode).collect(Collectors.toList());

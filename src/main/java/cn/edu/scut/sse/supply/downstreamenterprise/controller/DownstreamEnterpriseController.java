@@ -125,6 +125,27 @@ public class DownstreamEnterpriseController {
         return downstreamEnterpriseService.getSignatureOfText(token, text);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/cargo/save")
+    public @ResponseBody
+    ResponseResult saveCargo(@RequestHeader("authorization") String token, @RequestParam String content, @RequestParam int consignor,
+                             @RequestParam(required = false) Integer contractId,
+                             @RequestParam(required = false) Integer expressId,
+                             @RequestParam(required = false) Integer insuranceId) {
+        return downstreamEnterpriseService.saveCargo(token, content, consignor, contractId, expressId, insuranceId);
+    }
+
+    @RequestMapping("/cargo/list")
+    public @ResponseBody
+    ResponseResult listCargo(@RequestHeader("authorization") String token) {
+        return downstreamEnterpriseService.listCargo(token);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/cargo/get")
+    public @ResponseBody
+    ResponseResult getCargo(@RequestHeader("authorization") String token, @RequestParam int id) {
+        return downstreamEnterpriseService.getCargo(token, id);
+    }
+
     private boolean checkRepeatPassword(String s1, String s2) {
         if (s1 == null || "".equals(s1)) {
             return false;

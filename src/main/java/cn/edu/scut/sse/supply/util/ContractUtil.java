@@ -12,5 +12,6 @@ public class ContractUtil {
     public static final String BANK_APPLICATION_ADDRESS = "0xf67cbea10165443f0318d7bfe387b9b638c71844";
     public static final String INSURANCE_APPLICATION_ADDRESS = "0x97dffdc67c287090360d3e5d8f1393912096bde0";
     public static final String EXPRESS_APPLICATION_ADDRESS = "0x8b94b5d04b50aa80198742b8fef58c60beac877e";
+    public static final String CARGO_RECEIVE_ADDRESS = "0xec7e1d5b79d62b37d08275a98b2ddd6cdd0b010f";
 
 }
