@@ -23,8 +23,8 @@ import java.security.KeyPair;
 @Controller
 public class MainController {
 
-    private MainService mainService;
     private final Logger logger = LoggerFactory.getLogger(MainController.class);
+    private MainService mainService;
 
     @Autowired
     public MainController(MainService mainService) {

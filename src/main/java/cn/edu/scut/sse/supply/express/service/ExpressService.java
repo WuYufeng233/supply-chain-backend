@@ -520,7 +520,7 @@ public class ExpressService {
         }
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(expressApplicationDAO.listExpressApplication());
     }
-    
+
     private boolean checkLegalEnterpriseType(int type) {
         List<Integer> codeList = enterpriseDAO.listEnterprise().stream()
                 .map(Enterprise::getCode).collect(Collectors.toList());
