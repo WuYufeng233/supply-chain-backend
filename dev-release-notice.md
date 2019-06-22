@@ -3,3 +3,11 @@
 - 请将*res*目录下的内容加入包内*WEB-INF/classes*目录下，包括ca.crt node.crt node.key hibernate.cfg.xml 以及各个实体的orm配置文件
 - 请将*src/main/webapp/WEB-INF*内的applicationContext.xml加入包内*WEB-INF/classes*目录下
 - 使用IDEA连接数据库自动映射POJO后，请确保hibernate.cfg.xml中的数据库连接配置正确
+
+##### 合同ID范围（超出范围时会引起链上数据丢失，范围未作验证）
+- 银行        100000000~199999999
+- 物流        200000000~299999999
+- 保险公司    300000000~399999999
+- 核心企业    400000000~499999999
+- 上游企业    500000000~599999999
+- 下游企业    600000000~699999999
