@@ -541,7 +541,7 @@ public class BankService {
         application.setStartDate(new Timestamp(System.currentTimeMillis()));
         int fid = bankApplicationDAO.saveBankApplication(application);
         try {
-            return bankApplicationDAO.saveBankApplicationToFisco(fid, content, code, ENTERPRISE_CODE, signature, type);
+            return bankApplicationDAO.saveBankApplicationToFisco(fid, content, code, ENTERPRISE_CODE, signature, type).setData(fid);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
