@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -245,7 +243,6 @@ public class UpstreamEnterpriseService {
         if (upstreamEnterpriseUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
-        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         List<ContractVO> contracts = upstreamEnterpriseContractDAO.listEnableContract().stream()
                 .map(upstreamEnterpriseContract -> {
                     ContractVO vo = new ContractVO();
@@ -264,9 +261,9 @@ public class UpstreamEnterpriseService {
                     }
                     vo.setReceiver(receiver);
                     if (upstreamEnterpriseContract.getStartDate() == null) {
-                        vo.setStartDate("未知日期");
+                        vo.setStartDate(0L);
                     } else {
-                        vo.setStartDate(format.format(upstreamEnterpriseContract.getStartDate()));
+                        vo.setStartDate(upstreamEnterpriseContract.getStartDate().getTime());
                     }
                     return vo;
                 }).collect(Collectors.toList());

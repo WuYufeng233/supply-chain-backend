@@ -10,7 +10,7 @@ public class ContractVO {
     private String hash;
     private String sponsor;
     private String receiver;
-    private String startDate;
+    private Long startDate;
 
     public Integer getFid() {
         return fid;
@@ -44,11 +44,11 @@ public class ContractVO {
         this.receiver = receiver;
     }
 
-    public String getStartDate() {
+    public Long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Long startDate) {
         this.startDate = startDate;
     }
 
