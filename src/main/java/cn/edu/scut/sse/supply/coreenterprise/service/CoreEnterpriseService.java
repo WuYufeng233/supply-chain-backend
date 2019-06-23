@@ -170,6 +170,9 @@ public class CoreEnterpriseService {
         if (!hash.equals(contract.getHash())) {
             return new ResponseResult().setCode(-9).setMsg("hash非法");
         }
+        if (contract.getReceiver() != 0) {
+            return new ResponseResult().setCode(-9).setMsg("合同ID已存在，请重新上传合同");
+        }
         if (!checkLegalEnterpriseType(receiver)) {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
         }
