@@ -39,6 +39,7 @@ public class InsuranceContractDAO {
     public void saveContract(InsuranceContract contract) {
         Session session = SessionFactoryUtil.getSessionFactoryInstance().openSession();
         session.beginTransaction();
+        contract.setFid(ContractUtil.getNextContractId());
         session.save(contract);
         session.getTransaction().commit();
         session.close();

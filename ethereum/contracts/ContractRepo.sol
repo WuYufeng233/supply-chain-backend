@@ -19,6 +19,13 @@ contract ContractRepo {
     event receiveContractEvent(int code, string msg);
     event updateContractStatusEvent(int code, string msg);
     event getContractCallback(string hash, uint sponsor, uint receiver, string sponsorSignature, string receiverSignature, uint startTime, string status);
+    event getNextContractIdCallback(int id);
+
+    int private contractIdCounter;
+
+    constructor() public {
+        contractIdCounter = 1;
+    }
 
     function launchContract(int id, string hash, uint sponsor, uint receiver, string sponsorSignature) public {
         if (contracts[id].startTime != 0) {
@@ -82,6 +89,11 @@ contract ContractRepo {
             contracts[id].sponsor, contracts[id].receiver,
             contracts[id].sponsorSignature, contracts[id].receiverSignature,
             contracts[id].startTime, contracts[id].status);
+    }
+
+    function getNextContractId() public {
+        emit getNextContractIdCallback(contractIdCounter);
+        contractIdCounter++;
     }
 
 }
