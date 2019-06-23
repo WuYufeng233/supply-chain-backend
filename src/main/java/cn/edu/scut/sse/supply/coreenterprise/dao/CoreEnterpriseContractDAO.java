@@ -5,6 +5,7 @@ import cn.edu.scut.sse.supply.coreenterprise.entity.pojo.CoreEnterpriseContract;
 import cn.edu.scut.sse.supply.general.entity.vo.DetailContractVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.util.ContractUtil;
+import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.SessionFactoryUtil;
 import cn.edu.scut.sse.supply.util.Web3jUtil;
 import org.fisco.bcos.web3j.crypto.Credentials;
@@ -40,7 +41,7 @@ public class CoreEnterpriseContractDAO {
         Session session = SessionFactoryUtil.getSessionFactoryInstance().openSession();
         session.beginTransaction();
         if (contract.getFid() == null) {
-            contract.setFid(ContractUtil.getNextContractId());
+            contract.setFid(EnterpriseUtil.getNextEnterpriseContractId());
         }
         session.save(contract);
         session.getTransaction().commit();
