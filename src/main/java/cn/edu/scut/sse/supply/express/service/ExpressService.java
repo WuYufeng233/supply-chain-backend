@@ -212,6 +212,7 @@ public class ExpressService {
         ExpressContract contract = expressContractDAO.getContract(detailContract.getContractId());
         if (contract == null) {
             contract = new ExpressContract();
+            contract.setFid(detailContract.getContractId());
             contract.setHash(detailContract.getHash());
             contract.setSponsor(Integer.parseInt(detailContract.getSponsor()));
             contract.setReceiver(Integer.parseInt(detailContract.getReceiver()));

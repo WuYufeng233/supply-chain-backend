@@ -213,6 +213,7 @@ public class CoreEnterpriseService {
         CoreEnterpriseContract contract = coreEnterpriseContractDAO.getContract(detailContract.getContractId());
         if (contract == null) {
             contract = new CoreEnterpriseContract();
+            contract.setFid(detailContract.getContractId());
             contract.setHash(detailContract.getHash());
             contract.setSponsor(Integer.parseInt(detailContract.getSponsor()));
             contract.setReceiver(Integer.parseInt(detailContract.getReceiver()));

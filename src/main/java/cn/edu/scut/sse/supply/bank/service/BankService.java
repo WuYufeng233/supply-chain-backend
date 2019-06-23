@@ -214,6 +214,7 @@ public class BankService {
         BankContract contract = bankContractDAO.getContract(detailContract.getContractId());
         if (contract == null) {
             contract = new BankContract();
+            contract.setFid(detailContract.getContractId());
             contract.setHash(detailContract.getHash());
             contract.setSponsor(Integer.parseInt(detailContract.getSponsor()));
             contract.setReceiver(Integer.parseInt(detailContract.getReceiver()));

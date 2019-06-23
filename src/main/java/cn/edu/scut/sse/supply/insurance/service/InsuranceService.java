@@ -212,6 +212,7 @@ public class InsuranceService {
         InsuranceContract contract = insuranceContractDAO.getContract(detailContract.getContractId());
         if (contract == null) {
             contract = new InsuranceContract();
+            contract.setFid(detailContract.getContractId());
             contract.setHash(detailContract.getHash());
             contract.setSponsor(Integer.parseInt(detailContract.getSponsor()));
             contract.setReceiver(Integer.parseInt(detailContract.getReceiver()));

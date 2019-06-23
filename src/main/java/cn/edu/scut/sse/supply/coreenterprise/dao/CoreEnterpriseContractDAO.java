@@ -39,7 +39,9 @@ public class CoreEnterpriseContractDAO {
     public void saveContract(CoreEnterpriseContract contract) {
         Session session = SessionFactoryUtil.getSessionFactoryInstance().openSession();
         session.beginTransaction();
-        contract.setFid(ContractUtil.getNextContractId());
+        if (contract.getFid() == null) {
+            contract.setFid(ContractUtil.getNextContractId());
+        }
         session.save(contract);
         session.getTransaction().commit();
         session.close();

@@ -213,6 +213,7 @@ public class UpstreamEnterpriseService {
         UpstreamEnterpriseContract contract = upstreamEnterpriseContractDAO.getContract(detailContract.getContractId());
         if (contract == null) {
             contract = new UpstreamEnterpriseContract();
+            contract.setFid(detailContract.getContractId());
             contract.setHash(detailContract.getHash());
             contract.setSponsor(Integer.parseInt(detailContract.getSponsor()));
             contract.setReceiver(Integer.parseInt(detailContract.getReceiver()));
