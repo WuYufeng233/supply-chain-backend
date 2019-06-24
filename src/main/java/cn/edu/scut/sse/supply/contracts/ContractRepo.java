@@ -31,26 +31,22 @@ import java.util.List;
  * <p>Auto generated code.
  * <p><strong>Do not modify!</strong>
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
- * or the org.fisco.bcos.web3j.codegen.SolidityFunctionWrapperGenerator in the 
+ * or the org.fisco.bcos.web3j.codegen.SolidityFunctionWrapperGenerator in the
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
  * <p>Generated with web3j version none.
  */
 @SuppressWarnings("unchecked")
 public class ContractRepo extends Contract {
-    public static final String FUNC_GETNEXTCONTRACTID = "getNextContractId";
-
     public static final String FUNC_UPDATECONTRACTSTATUS = "updateContractStatus";
-
     public static final String FUNC_LAUNCHCONTRACT = "launchContract";
+    public static final String FUNC_GETNEXTCONTRACTID = "getNextContractId";
+    public static final String FUNC_RECEIVECONTRACT = "receiveContract";
+    public static final String FUNC_GETCONTRACT = "getContract";
     public static final Event LAUNCHCONTRACTEVENT_EVENT = new Event("launchContractEvent",
             Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
             }, new TypeReference<Utf8String>() {
             }));
-
-    public static final String FUNC_RECEIVECONTRACT = "receiveContract";
-
-    public static final String FUNC_GETCONTRACT = "getContract";
     public static final Event RECEIVECONTRACTEVENT_EVENT = new Event("receiveContractEvent",
             Arrays.<TypeReference<?>>asList(new TypeReference<Int256>() {
             }, new TypeReference<Utf8String>() {
@@ -152,6 +148,82 @@ public class ContractRepo extends Contract {
         asyncExecuteTransaction(function, callback);
     }
 
+    public RemoteCall<TransactionReceipt> launchContract(BigInteger id, String hash, BigInteger sponsor, BigInteger receiver, String sponsorSignature) {
+        final Function function = new Function(
+                FUNC_LAUNCHCONTRACT,
+                Arrays.<Type>asList(new Int256(id),
+                        new Utf8String(hash),
+                        new Uint256(sponsor),
+                        new Uint256(receiver),
+                        new Utf8String(sponsorSignature)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public void launchContract(BigInteger id, String hash, BigInteger sponsor, BigInteger receiver, String sponsorSignature, TransactionSucCallback callback) {
+        final Function function = new Function(
+                FUNC_LAUNCHCONTRACT,
+                Arrays.<Type>asList(new Int256(id),
+                        new Utf8String(hash),
+                        new Uint256(sponsor),
+                        new Uint256(receiver),
+                        new Utf8String(sponsorSignature)),
+                Collections.<TypeReference<?>>emptyList());
+        asyncExecuteTransaction(function, callback);
+    }
+
+    public RemoteCall<TransactionReceipt> getNextContractId() {
+        final Function function = new Function(
+                FUNC_GETNEXTCONTRACTID,
+                Arrays.<Type>asList(),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public void getNextContractId(TransactionSucCallback callback) {
+        final Function function = new Function(
+                FUNC_GETNEXTCONTRACTID,
+                Arrays.<Type>asList(),
+                Collections.<TypeReference<?>>emptyList());
+        asyncExecuteTransaction(function, callback);
+    }
+
+    public RemoteCall<TransactionReceipt> receiveContract(BigInteger id, BigInteger code, String signature) {
+        final Function function = new Function(
+                FUNC_RECEIVECONTRACT,
+                Arrays.<Type>asList(new Int256(id),
+                        new Uint256(code),
+                        new Utf8String(signature)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public void receiveContract(BigInteger id, BigInteger code, String signature, TransactionSucCallback callback) {
+        final Function function = new Function(
+                FUNC_RECEIVECONTRACT,
+                Arrays.<Type>asList(new Int256(id),
+                        new Uint256(code),
+                        new Utf8String(signature)),
+                Collections.<TypeReference<?>>emptyList());
+        asyncExecuteTransaction(function, callback);
+    }
+
+    public RemoteCall<TransactionReceipt> getContract(BigInteger id) {
+        final Function function = new Function(
+                FUNC_GETCONTRACT,
+                Arrays.<Type>asList(new Int256(id)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public void getContract(BigInteger id, TransactionSucCallback callback) {
+        final Function function = new Function(
+                FUNC_GETCONTRACT,
+                Arrays.<Type>asList(new Int256(id)),
+                Collections.<TypeReference<?>>emptyList());
+        asyncExecuteTransaction(function, callback);
+    }
+
     public List<LaunchContractEventEventResponse> getLaunchContractEventEvents(TransactionReceipt transactionReceipt) {
         List<EventValuesWithLog> valueList = extractEventParametersWithLog(LAUNCHCONTRACTEVENT_EVENT, transactionReceipt);
         ArrayList<LaunchContractEventEventResponse> responses = new ArrayList<LaunchContractEventEventResponse>(valueList.size());
@@ -216,88 +288,6 @@ public class ContractRepo extends Contract {
         BcosFilter filter = new BcosFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(RECEIVECONTRACTEVENT_EVENT));
         return receiveContractEventEventFlowable(filter);
-    }
-
-    public RemoteCall<TransactionReceipt> launchContract(BigInteger id, String hash, BigInteger sponsor, BigInteger receiver, String sponsorSignature) {
-        final Function function = new Function(
-                FUNC_LAUNCHCONTRACT,
-                Arrays.<Type>asList(new Int256(id),
-                        new Utf8String(hash),
-                        new Uint256(sponsor),
-                        new Uint256(receiver),
-                        new Utf8String(sponsorSignature)),
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
-    public void launchContract(BigInteger id, String hash, BigInteger sponsor, BigInteger receiver, String sponsorSignature, TransactionSucCallback callback) {
-        final Function function = new Function(
-                FUNC_LAUNCHCONTRACT,
-                Arrays.<Type>asList(new Int256(id),
-                        new Utf8String(hash),
-                        new Uint256(sponsor),
-                        new Uint256(receiver),
-                        new Utf8String(sponsorSignature)),
-                Collections.<TypeReference<?>>emptyList());
-        asyncExecuteTransaction(function, callback);
-    }
-
-    public RemoteCall<TransactionReceipt> getNextContractId() {
-        final Function function = new Function(
-                FUNC_GETNEXTCONTRACTID,
-                Arrays.<Type>asList(),
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
-    public void getNextContractId(TransactionSucCallback callback) {
-        final Function function = new Function(
-                FUNC_GETNEXTCONTRACTID,
-                Arrays.<Type>asList(),
-                Collections.<TypeReference<?>>emptyList());
-        asyncExecuteTransaction(function, callback);
-    }
-
-    public RemoteCall<TransactionReceipt> receiveContract(BigInteger id, BigInteger code, String signature) {
-        final Function function = new Function(
-                FUNC_RECEIVECONTRACT,
-                Arrays.<Type>asList(new Int256(id),
-                        new Uint256(code),
-                        new Utf8String(signature)),
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
-    public Flowable<GetContractCallbackEventResponse> getContractCallbackEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
-        BcosFilter filter = new BcosFilter(startBlock, endBlock, getContractAddress());
-        filter.addSingleTopic(EventEncoder.encode(GETCONTRACTCALLBACK_EVENT));
-        return getContractCallbackEventFlowable(filter);
-    }
-
-    public void receiveContract(BigInteger id, BigInteger code, String signature, TransactionSucCallback callback) {
-        final Function function = new Function(
-                FUNC_RECEIVECONTRACT,
-                Arrays.<Type>asList(new Int256(id),
-                        new Uint256(code),
-                        new Utf8String(signature)),
-                Collections.<TypeReference<?>>emptyList());
-        asyncExecuteTransaction(function, callback);
-    }
-
-    public RemoteCall<TransactionReceipt> getContract(BigInteger id) {
-        final Function function = new Function(
-                FUNC_GETCONTRACT,
-                Arrays.<Type>asList(new Int256(id)),
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
-    }
-
-    public void getContract(BigInteger id, TransactionSucCallback callback) {
-        final Function function = new Function(
-                FUNC_GETCONTRACT,
-                Arrays.<Type>asList(new Int256(id)),
-                Collections.<TypeReference<?>>emptyList());
-        asyncExecuteTransaction(function, callback);
     }
 
     public List<UpdateContractStatusEventEventResponse> getUpdateContractStatusEventEvents(TransactionReceipt transactionReceipt) {
@@ -368,6 +358,12 @@ public class ContractRepo extends Contract {
                 return typedResponse;
             }
         });
+    }
+
+    public Flowable<GetContractCallbackEventResponse> getContractCallbackEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        BcosFilter filter = new BcosFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(GETCONTRACTCALLBACK_EVENT));
+        return getContractCallbackEventFlowable(filter);
     }
 
     public List<GetNextContractIdCallbackEventResponse> getGetNextContractIdCallbackEvents(TransactionReceipt transactionReceipt) {
