@@ -5,6 +5,7 @@ import java.security.PublicKey;
 import java.util.Base64;
 
 /**
+ * 签名与验签工具
  * @author Yukino Yukinoshita
  */
 

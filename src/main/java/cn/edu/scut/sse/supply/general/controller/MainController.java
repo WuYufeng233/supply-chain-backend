@@ -61,6 +61,11 @@ public class MainController {
         }
     }
 
+    /**
+     * 生成RSA密钥对
+     *
+     * @return 返回RSA密钥对
+     */
     @RequestMapping("/key/generate")
     public @ResponseBody
     ResponseResult generateKeyPair() {

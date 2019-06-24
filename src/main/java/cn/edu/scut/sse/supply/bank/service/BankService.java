@@ -26,6 +26,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * 银行Service类进行业务处理
+ * <p>
+ * Service类向下调用DAO层对本地数据库和区块链数据进行读写，对数据进行业务处理
+ * 后向上返回。不同业务的具体操作见对应方法。
+ *
  * @author Yukino Yukinoshita
  */
 
@@ -133,6 +138,20 @@ public class BankService {
         return result;
     }
 
+    /**
+     * 上传合同文本获得文本Hash
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.通过{@link HashUtil#keccak256(byte[])}计算出合同文本的keccak256 Hash
+     * 3.对上传文本预先存库以获取合同ID，具体有2个步骤
+     * 3.1.读取本地数据库，检查是否有已经预先存库但是没有发起的草稿合同
+     * 3.2.若无草稿合同，存库，获取合同ID；若有草稿合同，直接修稿草稿合同
+     * 4.返回合同ID和合同文本的Hash
+     *
+     * @param token 银行用户凭证Token
+     * @param bytes 合同文本
+     * @return 返回执行结果，正常返回时包括合同ID和合同文本Hash
+     */
     public ResponseResult contractUpload(String token, byte[] bytes) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -157,6 +176,26 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("获取hash成功").setData(vo);
     }
 
+    /**
+     * 发起合同
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.检查传入Hash是否为空
+     * 3.根据传入的合同ID，读取本地数据库获得已经预先存库的合同
+     * 4.检查对应合同ID的合同是否已经预先存库，若合同为空表明合同ID错误
+     * 5.检查Hash与预先存库合同Hash是否一致
+     * 6.检查合同ID对应的合同是否已经发起
+     * 7.检查传入的接受方企业代码是否合法
+     * 8.发起合同，在本地存库
+     * 9.读取企业私钥，调用{@link SignVerifyUtil#sign(String, String)}对合同文本Hash进行签名
+     * 10.合同上链
+     *
+     * @param token 银行用户凭证Token
+     * @param fid 合同ID
+     * @param hash 合同文本Hash
+     * @param receiver 合同接受方企业代码
+     * @return 返回执行结果
+     */
     public ResponseResult contractLaunch(String token, int fid, String hash, int receiver) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -200,6 +239,21 @@ public class BankService {
         }
     }
 
+    /**
+     * 接受合同
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.根据传入的合同ID，读取区块链上合同数据
+     * 3.判断该合同是否与企业相关，企业既不是发起方也不是接受方时无法接受该合同
+     * 4.根据合同ID读取本地数据库
+     * 5.本地数据库没有该合同备份时，将该合同存库
+     * 6.读取企业私钥，调用{@link SignVerifyUtil#sign(String, String)}对合同文本Hash进行签名
+     * 7.接受合同，签名上链
+     *
+     * @param token 银行用户凭证Token
+     * @param fid 合同ID
+     * @return 返回执行结果
+     */
     public ResponseResult receiveContract(String token, int fid) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -276,6 +330,19 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(contracts);
     }
 
+    /**
+     * 获取合同详细信息
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.从区块链中根据合同ID读取合同数据
+     * 3.对发起方和接受方的签名调用{@link SignVerifyUtil#verify(String, String, String)}进行验证
+     * 4.将发起方和接受方的企业代码转换成企业名展示
+     * 5.返回详细信息
+     *
+     * @param token 银行用户凭证Token
+     * @param fid 合同ID
+     * @return 合同详细信息
+     */
     public ResponseResult getContract(String token, int fid) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -334,6 +401,17 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
     }
 
+    /**
+     * 更新合同状态
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.调用DAO层对区块链合同状态更新（该更新需要合同对方重新签名确认）
+     *
+     * @param token 银行用户凭证Token
+     * @param fid 合同ID
+     * @param status 新的合同状态
+     * @return 返回执行结果
+     */
     public ResponseResult updateContract(String token, int fid, String status) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -346,6 +424,17 @@ public class BankService {
         }
     }
 
+    /**
+     * 银行授信（设置企业信用额度）
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.调用DAO层设置区块链中企业信用额度
+     *
+     * @param token 银行用户凭证Token
+     * @param code 企业代码
+     * @param credit 信用额度
+     * @return 返回执行结果
+     */
     public ResponseResult setEnterpriseCredit(String token, int code, BigInteger credit) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -375,6 +464,14 @@ public class BankService {
         }
     }
 
+    /**
+     * 列出企业信用额度
+     * <p>
+     * 对每一个企业调用DAO层获取企业信用额度接口获取信用额度后，以列表展示
+     *
+     * @param token 银行用户凭证Token
+     * @return 返回企业信用额度列表
+     */
     public ResponseResult listEnterpriseCredit(String token) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -395,6 +492,21 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(enterpriseCreditVoList);
     }
 
+    /**
+     * 增加企业Token
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.检查Token负值
+     * 3.调用DAO层增加企业Token
+     * 4.对增加企业Token记录存本地数据库
+     *
+     * @param token 银行用户凭证Token
+     * @param code 企业代码
+     * @param val 增加Token值
+     * @param type 可选，绑定交易类型
+     * @param id 可选，绑定对应交易类型的ID
+     * @return 返回执行结果
+     */
     public ResponseResult addEnterpriseToken(String token, int code, BigInteger val, Integer type, Integer id) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -418,6 +530,17 @@ public class BankService {
         return result;
     }
 
+    /**
+     * 减少企业Token
+     *
+     * @param token 银行用户凭证Token
+     * @param code 企业代码
+     * @param val 减少Token值
+     * @param type 可选，绑定交易类型
+     * @param id 可选，绑定对应交易类型的ID
+     * @return 返回执行结果
+     * @see BankService#addEnterpriseToken(String, int, BigInteger, Integer, Integer)
+     */
     public ResponseResult subEnterpriseToken(String token, int code, BigInteger val, Integer type, Integer id) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -458,6 +581,13 @@ public class BankService {
         }
     }
 
+    /**
+     * 列出企业持有的Token
+     *
+     * @param token 银行用户凭证Token
+     * @return 返回企业持有Token列表
+     * @see BankService#listEnterpriseCredit(String)
+     */
     public ResponseResult listEnterpriseToken(String token) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -478,6 +608,22 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(enterpriseTokenVoList);
     }
 
+    /**
+     * 支付Token
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.检查Token负值
+     * 3.调用DAO层支付Token
+     * 4.对支付交易存本地数据库
+     * 5.返回执行结果
+     *
+     * @param token 银行用户凭证Token
+     * @param code 企业代码
+     * @param val 支付的Token值
+     * @param type 可选，绑定交易类型
+     * @param id 可选，绑定对应交易类型的ID
+     * @return 返回执行结果
+     */
     public ResponseResult payEnterpriseToken(String token, int code, BigInteger val, Integer type, Integer id) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -512,6 +658,18 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(list);
     }
 
+    /**
+     * 对文本签名
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.读取私钥
+     * 3.调用{@link SignVerifyUtil#sign(String, String)}进行签名
+     * 4.返回签名结果
+     *
+     * @param token 银行用户凭证Token
+     * @param text 待签名文本
+     * @return 返回文本的签名
+     */
     public ResponseResult getSignatureOfText(String token, String text) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -530,6 +688,20 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
     }
 
+    /**
+     * 向银行发起申请（兑付、赎回、贷款）
+     * <p>
+     * 1.检查传入的企业代码是否合法
+     * 2.将申请存银行本地数据库，并获取申请号
+     * 3.将申请存区块链
+     * 4.返回执行结果和申请号
+     *
+     * @param content 申请的内容概要
+     * @param type 申请类型， 2 - 兑付， 3 - 赎回， 4 - 贷款
+     * @param code 企业代码
+     * @param signature 企业对申请的内容概要和申请类型的签名
+     * @return 返回执行结果和申请号
+     */
     public ResponseResult createBankApplication(String content, int type, int code, String signature) {
         if (!checkLegalEnterpriseType(code)) {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
@@ -549,6 +721,20 @@ public class BankService {
         }
     }
 
+    /**
+     * 银行接受申请
+     * <p>
+     * 1.检查用户凭证Token
+     * 2.从银行本地数据库读取申请
+     * 3.读取私钥
+     * 4.对申请内容和申请类型进行签名
+     * 5.将签名传入区块链，接受申请
+     * 6.返回执行结果
+     *
+     * @param token 银行用户凭证Token
+     * @param fid 申请号
+     * @return 返回执行结果
+     */
     public ResponseResult receiveBankApplication(String token, int fid) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -571,6 +757,16 @@ public class BankService {
         }
     }
 
+    /**
+     * 修改申请状态
+     *
+     * @param token 银行用户凭证Token
+     * @param fid 申请号
+     * @param status 新的状态
+     * @return 返回执行结果
+     * @see BankService#updateContract(String, int, String)
+     * 与修改合同状态不同，银行修改申请状态不需要双方重新签名确认
+     */
     public ResponseResult updateBankApplicationStatus(String token, int fid, String status) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
@@ -619,6 +815,12 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
     }
 
+    /**
+     * 列出申请，对外开放的接口
+     *
+     * @param code 企业代码
+     * @return 返回企业列表
+     */
     public ResponseResult listApplication(int code) {
         if (!checkLegalEnterpriseType(code)) {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
@@ -626,6 +828,12 @@ public class BankService {
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(bankApplicationDAO.listBankApplication(code));
     }
 
+    /**
+     * 列出所有申请，银行接口
+     *
+     * @param token 银行用户凭证Token
+     * @return 返回所有申请的列表
+     */
     public ResponseResult listApplication(String token) {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");

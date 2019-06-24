@@ -10,6 +10,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.math.BigInteger;
 
 /**
+ * 核心企业接口Controller类
+ *
+ * 核心企业大部分功能与银行类似 {@link cn.edu.scut.sse.supply.bank.controller.BankController}
+ * 包括用户管理、合同管理、Token管理等
+ *
+ * 核心企业特有接口为入库信息管理，当货物抵达时可调用入库接口保存记录
+ *
  * @author Yukino Yukinoshita
  */
 
@@ -125,6 +132,17 @@ public class CoreEnterpriseController {
         return coreEnterpriseService.getSignatureOfText(token, text);
     }
 
+    /**
+     * 货物入库
+     *
+     * @param token 核心企业用户Token凭证
+     * @param content 货物内容
+     * @param consignor 寄货企业代码
+     * @param contractId 可选，绑定合同ID
+     * @param expressId 可选，绑定物流ID
+     * @param insuranceId 可选，绑定货物保险ID
+     * @return 返回执行结果
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/cargo/save")
     public @ResponseBody
     ResponseResult saveCargo(@RequestHeader("authorization") String token, @RequestParam String content, @RequestParam int consignor,
@@ -134,12 +152,25 @@ public class CoreEnterpriseController {
         return coreEnterpriseService.saveCargo(token, content, consignor, contractId, expressId, insuranceId);
     }
 
+    /**
+     * 列出本地数据库中入库记录
+     *
+     * @param token 核心企业用户Token凭证
+     * @return 返回入库记录列表
+     */
     @RequestMapping("/cargo/list")
     public @ResponseBody
     ResponseResult listCargo(@RequestHeader("authorization") String token) {
         return coreEnterpriseService.listCargo(token);
     }
 
+    /**
+     * 获取区块链中入库记录
+     *
+     * @param token 核心企业用户Token凭证
+     * @param id 入库记录ID
+     * @return 返回入库记录
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/cargo/get")
     public @ResponseBody
     ResponseResult getCargo(@RequestHeader("authorization") String token, @RequestParam int id) {

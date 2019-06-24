@@ -12,6 +12,21 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.math.BigInteger;
 
 /**
+ * 银行接口Controller类
+ *
+ * 银行在供应链中承担了现实货币与系统虚拟货币Token交换的责任。作为一般企业，
+ * 它具有基础用户管理、企业间合同管理的功能。作为银行，它具有系统虚拟货币Token
+ * 管理的功能，同时对外提供银行相关申请（贷款、赎回Token、兑付Token）的功能。
+ *
+ * 详细功能如下：
+ * 1.基础用户管理：用户登录、注册、修改密码
+ * 2.合同管理：上传合同文本计算Hash、发起合同、接受合同、列出合同、查看合同详情、更新合同状态
+ * 3.企业信用管理：授信（包括信用惩罚）、查看企业信用
+ * 4.企业Token管理：发放Token、回收Token、查看企业Token、支付Token、查看Token交易
+ * 5.对外提供银行申请管理：发起申请、查看申请
+ * 6.银行申请管理：接受申请、修改申请状态
+ * 6.杂项：对文本签名
+ *
  * @author Yukino Yukinoshita
  */
 

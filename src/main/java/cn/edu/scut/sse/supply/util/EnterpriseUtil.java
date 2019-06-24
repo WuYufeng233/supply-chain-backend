@@ -19,8 +19,17 @@ import static cn.edu.scut.sse.supply.util.ContractUtil.CONTRACT_REPO_ADDRESS;
 
 public class EnterpriseUtil {
 
+    /**
+     * 企业代码 -> 企业名称 映射表
+     */
     private static Map<Integer, String> enterpriseCodeNameMap = new HashMap<>();
 
+    /**
+     * 从映射表读取企业名称
+     *
+     * @param code 企业代码
+     * @return 企业名称， null if not present
+     */
     public static String getEnterpriseNameByCode(int code) {
         return enterpriseCodeNameMap.getOrDefault(code, null);
     }
@@ -29,6 +38,11 @@ public class EnterpriseUtil {
         enterpriseCodeNameMap.put(code, name);
     }
 
+    /**
+     * 向区块链读取下一个可用的合同ID
+     *
+     * @return 合同ID
+     */
     public static synchronized int getNextEnterpriseContractId() {
         BigInteger gasPrice = new BigInteger("300000000");
         BigInteger gasLimit = new BigInteger("300000000");

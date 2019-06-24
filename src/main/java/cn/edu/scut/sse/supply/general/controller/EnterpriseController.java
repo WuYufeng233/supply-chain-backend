@@ -28,12 +28,29 @@ public class EnterpriseController {
         this.enterpriseService = enterpriseService;
     }
 
+    /**
+     * 获取企业列表
+     * <p>
+     * 包括企业代码、企业名称、企业API地址
+     *
+     * @return 返回企业列表
+     */
     @RequestMapping(value = "/list")
     public @ResponseBody
     ResponseResult listEnterprise() {
         return enterpriseService.listEnterprise();
     }
 
+    /**
+     * 管理员使用，初始化企业Token账户
+     *
+     * 在首次部署时，为每一个企业调用一次该接口
+     *
+     * @param token 管理员Token凭证，具体值见代码逻辑
+     * @param code 企业代码
+     * @param name 企业名
+     * @return 返回执行结果
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/token/create")
     public @ResponseBody
     ResponseResult createTokenAccount(@RequestHeader("authorization") String token, int code, String name) {
@@ -44,6 +61,14 @@ public class EnterpriseController {
         return enterpriseService.createTokenAccount(code, name);
     }
 
+    /**
+     * 管理员使用，更新企业Token账户的企业名
+     *
+     * @param token 管理员Token凭证，具体值见代码逻辑
+     * @param code 企业代码
+     * @param name 企业名
+     * @return 返回执行结果
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/token/update")
     public @ResponseBody
     ResponseResult updateTokenAccount(@RequestHeader("authorization") String token, int code, String name) {

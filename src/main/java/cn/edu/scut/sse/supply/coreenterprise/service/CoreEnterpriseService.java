@@ -420,6 +420,20 @@ public class CoreEnterpriseService {
         return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
     }
 
+    /**
+     * 保存入库信息
+     * <p>
+     * 1.向本地数据库保存入库内容、寄货企业
+     * 2.向区块链中保存入库记录ID、入库内容、寄货企业、合同ID、物流ID、保险ID
+     *
+     * @param token 核心企业用户凭证Token
+     * @param content 入库内容
+     * @param consignor 寄货企业
+     * @param contractId 可选，绑定的合同ID
+     * @param expressId 可选，绑定的物流ID
+     * @param insuranceId 可选，绑定的保险ID
+     * @return 返回执行结果
+     */
     public ResponseResult saveCargo(String token, String content, int consignor, Integer contractId, Integer expressId, Integer insuranceId) {
         if (coreEnterpriseUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
