@@ -31,6 +31,14 @@ public class EnterpriseService {
         return result;
     }
 
+    public ResponseResult initTokenAccount() {
+        List<Enterprise> enterprises = enterpriseDAO.listEnterprise();
+        for (Enterprise enterprise : enterprises) {
+            createTokenAccount(enterprise.getCode(), enterprise.getName());
+        }
+        return new ResponseResult().setCode(0).setMsg("初始化Token账号执行完成");
+    }
+
     public ResponseResult createTokenAccount(int code, String name) {
         try {
             return enterpriseDAO.createTokenAccountToFisco(code, name);

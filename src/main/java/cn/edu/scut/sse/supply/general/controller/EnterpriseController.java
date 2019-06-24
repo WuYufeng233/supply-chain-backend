@@ -43,8 +43,21 @@ public class EnterpriseController {
 
     /**
      * 管理员使用，初始化企业Token账户
+     * <p>
+     * 首次部署时使用，对数据库已有的企业进行Token账号初始化
      *
-     * 在首次部署时，为每一个企业调用一次该接口
+     * @param token 管理员Token凭证，具体值见代码逻辑
+     * @return 返回执行结果
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/token/init")
+    public @ResponseBody
+    ResponseResult initTokenAccount(@RequestHeader("authorization") String token) {
+        logger.info("Initialize token account, token = {}", token);
+        return enterpriseService.initTokenAccount();
+    }
+
+    /**
+     * 管理员使用，添加企业Token账户
      *
      * @param token 管理员Token凭证，具体值见代码逻辑
      * @param code 企业代码
