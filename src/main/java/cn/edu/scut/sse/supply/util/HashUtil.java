@@ -1,27 +1,17 @@
 package cn.edu.scut.sse.supply.util;
 
-import cn.edu.scut.sse.supply.contracts.HashCalculator;
-import org.fisco.bcos.web3j.crypto.Credentials;
-import org.fisco.bcos.web3j.protocol.Web3j;
-import org.fisco.bcos.web3j.tx.gas.StaticGasProvider;
+import org.fisco.bcos.web3j.crypto.Hash;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import static cn.edu.scut.sse.supply.util.ContractUtil.HASH_CALCULATOR_ADDRESS;
-
 /**
  * @author Yukino Yukinoshita
  */
 
 public class HashUtil {
-
-    private static BigInteger gasPrice = new BigInteger("300000000");
-    private static BigInteger gasLimit = new BigInteger("300000000");
-    private static Credentials credentials = Credentials.create("b33405550c96ef5ae7d7d9a6b323fa739277bb469546db96c1e2e5690ea871fe");
-    private static String address = HASH_CALCULATOR_ADDRESS;
 
     /**
      * Generate user token
@@ -53,14 +43,7 @@ public class HashUtil {
      * @return keccak256 hash
      */
     public static String keccak256(byte[] src) {
-        Web3j web3j = Web3jUtil.getWeb3j();
-        HashCalculator contract = HashCalculator.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
-        try {
-            return byteArrayToHex(contract.cal(src).send());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return byteArrayToHex(Hash.sha3(src));
     }
 
     private static String byteArrayToHex(byte[] byteArray) {
