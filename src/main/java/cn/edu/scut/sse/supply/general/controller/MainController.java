@@ -1,9 +1,7 @@
 package cn.edu.scut.sse.supply.general.controller;
 
-import cn.edu.scut.sse.supply.general.entity.vo.KeyPairVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.general.service.MainService;
-import cn.edu.scut.sse.supply.util.RSAUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
-import java.security.KeyPair;
 
 /**
  * @author Yukino Yukinoshita
@@ -59,21 +56,6 @@ public class MainController {
         } catch (Exception e) {
             return e.getMessage();
         }
-    }
-
-    /**
-     * 生成RSA密钥对
-     *
-     * @return 返回RSA密钥对
-     */
-    @RequestMapping("/key/generate")
-    public @ResponseBody
-    ResponseResult generateKeyPair() {
-        KeyPair keyPair = RSAUtil.generateKeyPair();
-        KeyPairVO vo = new KeyPairVO();
-        vo.setPrivateKey(RSAUtil.convertPrivateKey(keyPair.getPrivate()));
-        vo.setPublicKey(RSAUtil.convertPublicKey(keyPair.getPublic()));
-        return new ResponseResult().setCode(0).setMsg("生成成功").setData(vo);
     }
 
 }
