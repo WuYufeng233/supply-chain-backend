@@ -415,7 +415,7 @@ public class ExpressService {
         if (privateKey == null || "".equals(privateKey)) {
             return new ResponseResult().setCode(-11).setMsg("内部状态错误，未取得密钥");
         }
-        String signature = SignVerifyUtil.sign(privateKey, text);
+        String signature = SignVerifyUtil.sign(privateKey, HashUtil.keccak256(text.getBytes()));
         return new ResponseResult().setCode(0).setMsg("签名成功").setData(signature);
     }
 
@@ -451,7 +451,7 @@ public class ExpressService {
             return new ResponseResult().setCode(-11).setMsg("服务器内部错误，未获得密钥");
         }
         String content = application.getContent().concat(String.valueOf(application.getType()));
-        String signature = SignVerifyUtil.sign(privateKey, content);
+        String signature = SignVerifyUtil.sign(privateKey, HashUtil.keccak256(content.getBytes()));
         try {
             return expressApplicationDAO.receiveExpressApplicationToFisco(fid, signature);
         } catch (Exception e) {
@@ -484,7 +484,7 @@ public class ExpressService {
         String sponsorPublicKey = keystoreDAO.getKeystore(vo.getSponsor()).getPublicKey();
         String receiverPublicKey = keystoreDAO.getKeystore(vo.getReceiver()).getPublicKey();
         try {
-            boolean sponsorVerify = SignVerifyUtil.verify(sponsorPublicKey, content, vo.getSponsorSignature());
+            boolean sponsorVerify = SignVerifyUtil.verify(sponsorPublicKey, HashUtil.keccak256(content.getBytes()), vo.getSponsorSignature());
             if (sponsorVerify) {
                 vo.setSponsorVerify(1);
             } else {
@@ -495,7 +495,7 @@ public class ExpressService {
             vo.setSponsorVerify(0);
         }
         try {
-            boolean receiverVerify = SignVerifyUtil.verify(receiverPublicKey, content, vo.getReceiverSignature());
+            boolean receiverVerify = SignVerifyUtil.verify(receiverPublicKey, HashUtil.keccak256(content.getBytes()), vo.getReceiverSignature());
             if (receiverVerify) {
                 vo.setReceiverVerify(1);
             } else {

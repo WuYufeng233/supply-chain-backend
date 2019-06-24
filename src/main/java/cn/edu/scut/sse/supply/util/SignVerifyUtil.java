@@ -24,15 +24,15 @@ public class SignVerifyUtil {
      * 验签
      *
      * @param publicKeyStr 公钥
-     * @param message 原文本
+     * @param hash 文本hash
      * @param signature 文本签名，以{@code r@s}格式
      * @return true if verify
      */
-    public static boolean verify(String publicKeyStr, String message, String signature) {
+    public static boolean verify(String publicKeyStr, String hash, String signature) {
         if (publicKeyStr == null || "".equals(publicKeyStr)) {
             return false;
         }
-        if (message == null || "".equals(message)) {
+        if (hash == null || "".equals(hash)) {
             return false;
         }
         if (signature == null || "".equals(signature) || !signature.contains("@")) {
@@ -46,7 +46,7 @@ public class SignVerifyUtil {
         String sStr = rs[1];
         ECDSASignature ecdsaSignature = new ECDSASignature(new BigInteger(rStr, 16), new BigInteger(sStr, 16));
         for (int i = 0; i < 4; ++i) {
-            BigInteger testPublicKey = Sign.recoverFromSignature(i, ecdsaSignature, message.getBytes());
+            BigInteger testPublicKey = Sign.recoverFromSignature(i, ecdsaSignature, hexStringToByte(hash));
             if (testPublicKey == null) {
                 continue;
             }
@@ -61,19 +61,34 @@ public class SignVerifyUtil {
      * 文本签名
      *
      * @param privateKey 私钥
-     * @param message 待签名文本
+     * @param hash 待签名文本hash
      * @return 签名，以{@code r@s}格式返回
      */
-    public static String sign(String privateKey, String message) {
+    public static String sign(String privateKey, String hash) {
         if (privateKey == null || "".equals(privateKey)) {
             return null;
         }
-        if (message == null || "".equals(message)) {
+        if (hash == null || "".equals(hash)) {
             return null;
         }
         ECKeyPair keyPair = ECKeyPair.create(new BigInteger(privateKey, 16));
-        ECDSASignature signature = ECDSASign.sign(message.getBytes(), keyPair.getPrivateKey());
+        ECDSASignature signature = ECDSASign.sign(hexStringToByte(hash), keyPair.getPrivateKey());
         return signature.r.toString(16) + "@" + signature.s.toString(16);
+    }
+
+    private static byte[] hexStringToByte(String hex) {
+        int len = (hex.length() / 2);
+        byte[] result = new byte[len];
+        char[] chars = hex.toCharArray();
+        for (int i = 0; i < len; i++) {
+            int pos = i * 2;
+            result[i] = (byte) (toByte(chars[pos]) << 4 | toByte(chars[pos + 1]));
+        }
+        return result;
+    }
+
+    private static int toByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
 }
