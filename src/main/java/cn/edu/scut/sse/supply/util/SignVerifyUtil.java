@@ -12,8 +12,11 @@ import java.math.BigInteger;
  *
  * Sign and verify by using Elliptic Curve Digital Signature Algorithm (ECDSA).
  * The KeyPair should meet the Ethereum rule, that is created by using protocol
- * BIP32, BIP39, BIP44, with the format m/44'/60'/0'/0/0. Therefore the length
- * of hexadecimal private key string should be 64.
+ * BIP32, BIP39, BIP44, with the format m/44'/60'/0'/0/0. Therefore the private
+ * key should be 32 bytes, as a hexadecimal string of 64-bit length, and the
+ * public key should be a hexadecimal string of 128-bit length. Besides, the
+ * message hash should be Ethereum sha3(keccak256) hash, passed as a hexadecimal
+ * string of 64-bit length.
  *
  * @author Yukino Yukinoshita
  */
@@ -21,11 +24,11 @@ import java.math.BigInteger;
 public class SignVerifyUtil {
 
     /**
-     * 验签
+     * Verify a signature
      *
-     * @param publicKeyStr 公钥
-     * @param hash 文本hash
-     * @param signature 文本签名，以{@code r@s}格式
+     * @param publicKeyStr hexadecimal string public key, 64 bytes
+     * @param hash message keccak256 hash, 32 bytes
+     * @param signature ECDSA signature of hash，in the format {@code r@s}
      * @return true if verify
      */
     public static boolean verify(String publicKeyStr, String hash, String signature) {
@@ -58,11 +61,11 @@ public class SignVerifyUtil {
     }
 
     /**
-     * 文本签名
+     * Sign message hash
      *
-     * @param privateKey 私钥
-     * @param hash 待签名文本hash
-     * @return 签名，以{@code r@s}格式返回
+     * @param privateKey hexadecimal string public key, 32 bytes
+     * @param hash message keccak256 hash, 32 bytes
+     * @return ECDSA signature，in the format {@code r@s}
      */
     public static String sign(String privateKey, String hash) {
         if (privateKey == null || "".equals(privateKey)) {
