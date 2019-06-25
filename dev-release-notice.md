@@ -6,4 +6,4 @@
 
 ##### 部署时注意
 - 请确保区块链节点已经启动
-- 首次部署手动调用general.controller.*EnterpriseController*#*createTokenAccount*(...)方法为每一个企业初始化Token钱包
+- 首次部署手动调用一次general.controller.*EnterpriseController*#*initTokenAccount*(String)方法为企业初始化Token钱包
