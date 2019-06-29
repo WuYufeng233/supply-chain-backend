@@ -791,27 +791,35 @@ public class BankService {
         String content = vo.getContent().concat(String.valueOf(vo.getApplicationType()));
         String sponsorPublicKey = keystoreDAO.getKeystore(vo.getSponsor()).getPublicKey();
         String receiverPublicKey = keystoreDAO.getKeystore(vo.getReceiver()).getPublicKey();
-        try {
-            boolean sponsorVerify = SignVerifyUtil.verify(sponsorPublicKey, HashUtil.keccak256(content.getBytes()), vo.getSponsorSignature());
-            if (sponsorVerify) {
-                vo.setSponsorVerify(1);
-            } else {
-                vo.setSponsorVerify(-1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (vo.getSponsorSignature() == null || "".equals(vo.getSponsorSignature())) {
             vo.setSponsorVerify(0);
-        }
-        try {
-            boolean receiverVerify = SignVerifyUtil.verify(receiverPublicKey, HashUtil.keccak256(content.getBytes()), vo.getReceiverSignature());
-            if (receiverVerify) {
-                vo.setReceiverVerify(1);
-            } else {
-                vo.setReceiverVerify(-1);
+        } else {
+            try {
+                boolean sponsorVerify = SignVerifyUtil.verify(sponsorPublicKey, HashUtil.keccak256(content.getBytes()), vo.getSponsorSignature());
+                if (sponsorVerify) {
+                    vo.setSponsorVerify(1);
+                } else {
+                    vo.setSponsorVerify(-1);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                vo.setSponsorVerify(0);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        if (vo.getReceiverSignature() == null || "".equals(vo.getReceiverSignature())) {
             vo.setReceiverVerify(0);
+        } else {
+            try {
+                boolean receiverVerify = SignVerifyUtil.verify(receiverPublicKey, HashUtil.keccak256(content.getBytes()), vo.getReceiverSignature());
+                if (receiverVerify) {
+                    vo.setReceiverVerify(1);
+                } else {
+                    vo.setReceiverVerify(-1);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                vo.setReceiverVerify(0);
+            }
         }
         return new ResponseResult().setCode(0).setMsg("查询成功").setData(vo);
     }
