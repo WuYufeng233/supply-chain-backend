@@ -522,6 +522,9 @@ public class BankService {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
+        if (result.getCode() != 0) {
+            return result;
+        }
         String transactionHash = (String) result.getData();
         if (type != null && id != null) {
             enterpriseDAO.saveTokenTransaction(transactionHash, ENTERPRISE_CODE, code, val, type, id);
@@ -555,6 +558,9 @@ public class BankService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
+        }
+        if (result.getCode() != 0) {
+            return result;
         }
         String transactionHash = (String) result.getData();
         if (type != null && id != null) {
