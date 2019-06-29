@@ -12,6 +12,7 @@ import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceApplication;
 import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceContract;
 import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceUser;
 import cn.edu.scut.sse.supply.insurance.entity.vo.DetailInsuranceApplicationVO;
+import cn.edu.scut.sse.supply.insurance.entity.vo.InsuranceApplicationVO;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import cn.edu.scut.sse.supply.util.SignVerifyUtil;
@@ -512,14 +513,52 @@ public class InsuranceService {
         if (!checkLegalEnterpriseType(code)) {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
         }
-        return new ResponseResult().setCode(0).setMsg("查询成功").setData(insuranceApplicationDAO.listInsuranceApplication(code));
+        List<InsuranceApplicationVO> vos = insuranceApplicationDAO.listInsuranceApplication(code).stream()
+                .map(InsuranceApplicationVO::from)
+                .map(insuranceApplicationVO -> {
+                    DetailInsuranceApplicationVO detailVO;
+                    try {
+                        detailVO = insuranceApplicationDAO.getInsuranceApplicationFromFisco(insuranceApplicationVO.getFid());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        insuranceApplicationVO.setStatus("未知状态");
+                        return insuranceApplicationVO;
+                    }
+                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                        insuranceApplicationVO.setStatus("未接收");
+                    } else {
+                        insuranceApplicationVO.setStatus(detailVO.getStatus());
+                    }
+                    return insuranceApplicationVO;
+                })
+                .collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vos);
     }
 
     public ResponseResult listApplication(String token) {
         if (insuranceUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
-        return new ResponseResult().setCode(0).setMsg("查询成功").setData(insuranceApplicationDAO.listInsuranceApplication());
+        List<InsuranceApplicationVO> vos = insuranceApplicationDAO.listInsuranceApplication().stream()
+                .map(InsuranceApplicationVO::from)
+                .map(insuranceApplicationVO -> {
+                    DetailInsuranceApplicationVO detailVO;
+                    try {
+                        detailVO = insuranceApplicationDAO.getInsuranceApplicationFromFisco(insuranceApplicationVO.getFid());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        insuranceApplicationVO.setStatus("未知状态");
+                        return insuranceApplicationVO;
+                    }
+                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                        insuranceApplicationVO.setStatus("未接收");
+                    } else {
+                        insuranceApplicationVO.setStatus(detailVO.getStatus());
+                    }
+                    return insuranceApplicationVO;
+                })
+                .collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vos);
     }
 
     private boolean checkLegalEnterpriseType(int type) {

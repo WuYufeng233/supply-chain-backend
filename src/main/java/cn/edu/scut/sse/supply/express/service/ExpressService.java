@@ -8,6 +8,7 @@ import cn.edu.scut.sse.supply.express.entity.pojo.ExpressApplication;
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressContract;
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressUser;
 import cn.edu.scut.sse.supply.express.entity.vo.DetailExpressApplicationVO;
+import cn.edu.scut.sse.supply.express.entity.vo.ExpressApplicationVO;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
@@ -512,14 +513,52 @@ public class ExpressService {
         if (!checkLegalEnterpriseType(code)) {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
         }
-        return new ResponseResult().setCode(0).setMsg("查询成功").setData(expressApplicationDAO.listExpressApplication(code));
+        List<ExpressApplicationVO> vos = expressApplicationDAO.listExpressApplication(code).stream()
+                .map(ExpressApplicationVO::from)
+                .map(expressApplicationVO -> {
+                    DetailExpressApplicationVO detailVO;
+                    try {
+                        detailVO = expressApplicationDAO.getExpressApplicationFromFisco(expressApplicationVO.getFid());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        expressApplicationVO.setStatus("未知状态");
+                        return expressApplicationVO;
+                    }
+                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                        expressApplicationVO.setStatus("未接收");
+                    } else {
+                        expressApplicationVO.setStatus(detailVO.getStatus());
+                    }
+                    return expressApplicationVO;
+                })
+                .collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vos);
     }
 
     public ResponseResult listApplication(String token) {
         if (expressUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
-        return new ResponseResult().setCode(0).setMsg("查询成功").setData(expressApplicationDAO.listExpressApplication());
+        List<ExpressApplicationVO> vos = expressApplicationDAO.listExpressApplication().stream()
+                .map(ExpressApplicationVO::from)
+                .map(expressApplicationVO -> {
+                    DetailExpressApplicationVO detailVO;
+                    try {
+                        detailVO = expressApplicationDAO.getExpressApplicationFromFisco(expressApplicationVO.getFid());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        expressApplicationVO.setStatus("未知状态");
+                        return expressApplicationVO;
+                    }
+                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                        expressApplicationVO.setStatus("未接收");
+                    } else {
+                        expressApplicationVO.setStatus(detailVO.getStatus());
+                    }
+                    return expressApplicationVO;
+                })
+                .collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vos);
     }
 
     private boolean checkLegalEnterpriseType(int type) {

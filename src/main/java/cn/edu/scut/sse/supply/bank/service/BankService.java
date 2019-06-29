@@ -7,6 +7,7 @@ import cn.edu.scut.sse.supply.bank.dao.BankUserDAO;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankApplication;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankContract;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankUser;
+import cn.edu.scut.sse.supply.bank.entity.vo.BankApplicationVO;
 import cn.edu.scut.sse.supply.bank.entity.vo.DetailBankApplicationVO;
 import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseCreditVO;
 import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseTokenVO;
@@ -825,7 +826,26 @@ public class BankService {
         if (!checkLegalEnterpriseType(code)) {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
         }
-        return new ResponseResult().setCode(0).setMsg("查询成功").setData(bankApplicationDAO.listBankApplication(code));
+        List<BankApplicationVO> vos = bankApplicationDAO.listBankApplication(code).stream()
+                .map(BankApplicationVO::from)
+                .map(bankApplicationVO -> {
+                    DetailBankApplicationVO detailVO;
+                    try {
+                        detailVO = bankApplicationDAO.getBankApplicationFromFisco(bankApplicationVO.getFid());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        bankApplicationVO.setStatus("未知状态");
+                        return bankApplicationVO;
+                    }
+                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                        bankApplicationVO.setStatus("未接收");
+                    } else {
+                        bankApplicationVO.setStatus(detailVO.getStatus());
+                    }
+                    return bankApplicationVO;
+                })
+                .collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vos);
     }
 
     /**
@@ -838,7 +858,26 @@ public class BankService {
         if (bankUserDAO.getUserByToken(token) == null) {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
-        return new ResponseResult().setCode(0).setMsg("查询成功").setData(bankApplicationDAO.listBankApplication());
+        List<BankApplicationVO> vos = bankApplicationDAO.listBankApplication().stream()
+                .map(BankApplicationVO::from)
+                .map(bankApplicationVO -> {
+                    DetailBankApplicationVO detailVO;
+                    try {
+                        detailVO = bankApplicationDAO.getBankApplicationFromFisco(bankApplicationVO.getFid());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        bankApplicationVO.setStatus("未知状态");
+                        return bankApplicationVO;
+                    }
+                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                        bankApplicationVO.setStatus("未接收");
+                    } else {
+                        bankApplicationVO.setStatus(detailVO.getStatus());
+                    }
+                    return bankApplicationVO;
+                })
+                .collect(Collectors.toList());
+        return new ResponseResult().setCode(0).setMsg("查询成功").setData(vos);
     }
 
     private boolean checkLegalEnterpriseType(int type) {
