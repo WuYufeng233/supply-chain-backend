@@ -41,9 +41,11 @@ public class KeystoreDAO {
             return null;
         }
         FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] content = new byte[3272];
+        byte[] content = new byte[150];
         fileInputStream.read(content);
-        return new String(content).replaceAll("[\0]", "");
+        String result = new String(content).replaceAll("[\0]", "");
+        fileInputStream.close();
+        return result;
     }
 
 }

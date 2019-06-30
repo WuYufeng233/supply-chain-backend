@@ -9,7 +9,6 @@ http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="cn.edu.scut.sse.supply.bank"/>
     <context:component-scan base-package="cn.edu.scut.sse.supply.downstreamenterprise"/>
     <context:component-scan base-package="cn.edu.scut.sse.supply.general"/>
     <!-- 注册适配器 -->

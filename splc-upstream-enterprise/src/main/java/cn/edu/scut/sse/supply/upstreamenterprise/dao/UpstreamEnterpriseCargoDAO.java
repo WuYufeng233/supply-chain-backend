@@ -28,7 +28,7 @@ import java.util.List;
 @Repository
 public class UpstreamEnterpriseCargoDAO {
 
-    private final int ENTERPRISE_CODE = 4002;
+    private static final int ENTERPRISE_CODE = 4002;
     private BigInteger gasPrice = new BigInteger("300000000");
     private BigInteger gasLimit = new BigInteger("300000000");
     private Credentials credentials = Credentials.create("db8bb163206bbb46faa66fb04310ea7ef034cd7fac35a92328db1e3b72f7836d");

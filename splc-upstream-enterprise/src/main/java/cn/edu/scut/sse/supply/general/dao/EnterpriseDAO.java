@@ -4,10 +4,8 @@ import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
 import cn.edu.scut.sse.supply.general.entity.pojo.TokenTransactionRecord;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.general.entity.vo.TransactionRecordVO;
-import cn.edu.scut.sse.supply.util.ContractUtil;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.SessionFactoryUtil;
-import org.fisco.bcos.web3j.crypto.Credentials;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
@@ -25,11 +23,6 @@ import java.util.stream.Collectors;
 
 @Repository
 public class EnterpriseDAO {
-
-    private BigInteger gasPrice = new BigInteger("300000000");
-    private BigInteger gasLimit = new BigInteger("300000000");
-    private Credentials credentials = Credentials.create("db8bb163206bbb46faa66fb04310ea7ef034cd7fac35a92328db1e3b72f7836d");
-    private String address = ContractUtil.ENTERPRISE_TOKEN_ADDRESS;
 
     public Enterprise getEnterpriseByCode(int code) {
         SessionFactory sessionFactory = SessionFactoryUtil.getSessionFactoryInstance();
