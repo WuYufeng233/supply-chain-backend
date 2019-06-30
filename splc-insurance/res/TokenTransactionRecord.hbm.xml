@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="cn.edu.scut.sse.supply.general.entity.pojo.TokenTransactionRecord" table="token_transaction_record"
+           schema="supply_chain">
+        <id name="id">
+            <column name="id" sql-type="int(11)"/>
+            <generator class="increment"/>
+        </id>
+        <property name="transactionHash">
+            <column name="transaction_hash" sql-type="varchar(80)" length="80" not-null="true"/>
+        </property>
+        <property name="value">
+            <column name="value" sql-type="decimal(30)" precision="30" not-null="true"/>
+        </property>
+        <property name="payer">
+            <column name="payer" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="payee">
+            <column name="payee" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="bindingType">
+            <column name="binding_type" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="bindingId">
+            <column name="binding_id" sql-type="int(11)" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

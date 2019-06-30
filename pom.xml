@@ -7,7 +7,15 @@
     <groupId>cn.edu.scut.sse</groupId>
     <artifactId>supply-chain-backend</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <modules>
+        <module>splc-bank</module>
+        <module>splc-core-enterprise</module>
+        <module>splc-downstream-enterprise</module>
+        <module>splc-express</module>
+        <module>splc-insurance</module>
+        <module>splc-upstream-enterprise</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <name>SupplyChainBackEnd Maven Webapp</name>
     <!-- FIXME change it to the project's website -->

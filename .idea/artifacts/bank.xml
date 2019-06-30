@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="bank">
+    <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>splcbank</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="bank.war">
+      <element id="artifact" artifact-name="splcbank:war exploded" />
+    </root>
+  </artifact>
+</component>

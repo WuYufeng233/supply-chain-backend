@@ -2,6 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/splc-bank/splcbank.iml" filepath="$PROJECT_DIR$/splc-bank/splcbank.iml" />
+      <module fileurl="file://$PROJECT_DIR$/splc-core-enterprise/splccoreenterprise.iml" filepath="$PROJECT_DIR$/splc-core-enterprise/splccoreenterprise.iml" />
+      <module fileurl="file://$PROJECT_DIR$/splc-downstream-enterprise/splcdownstreamenterprise.iml" filepath="$PROJECT_DIR$/splc-downstream-enterprise/splcdownstreamenterprise.iml" />
+      <module fileurl="file://$PROJECT_DIR$/splc-express/splcexpress.iml" filepath="$PROJECT_DIR$/splc-express/splcexpress.iml" />
+      <module fileurl="file://$PROJECT_DIR$/splc-insurance/splcinsurance.iml" filepath="$PROJECT_DIR$/splc-insurance/splcinsurance.iml" />
+      <module fileurl="file://$PROJECT_DIR$/splc-upstream-enterprise/splcupstreamenterprise.iml" filepath="$PROJECT_DIR$/splc-upstream-enterprise/splcupstreamenterprise.iml" />
       <module fileurl="file://$PROJECT_DIR$/supply-chain-backend.iml" filepath="$PROJECT_DIR$/supply-chain-backend.iml" />
     </modules>
   </component>

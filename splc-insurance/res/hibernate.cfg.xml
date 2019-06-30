@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- 配置关于数据库连接的四个项：driverClass  url username password -->
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/supply_chain?serverTimezone=GMT%2B8&amp;characterEncoding=UTF-8
+        </property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">kkk123456***</property>
+
+        <!-- 连接池配置 -->
+        <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider
+        </property>
+
+        <property name="hibernate.c3p0.max_size">20</property>
+        <property name="hibernate.c3p0.min_size">5</property>
+        <!-- 连接池里连接的超时时长 -->
+        <property name="hibernate.c3p0.timeout">2000</property>
+        <!-- 最大缓存多少个statement对象  -->
+        <property name="hibernate.c3p0.max_statements">10</property>
+        <!-- 该线程会根据时间差值判断要不要把超时的连接移除 -->
+        <property name="hibernate.c3p0.idle_test_period">2000</property>
+        <!-- 当连接池耗尽时，Hibernate应该向数据库一次性申请的连接数 -->
+        <property name="hibernate.c3p0.acquire_increment">10</property>
+
+        <!-- 可以将向数据库发送的SQL语句显示出来 -->
+        <property name="hibernate.show_sql">true</property>
+        <!-- 格式化SQL语句 -->
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- hibernate的方言 -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+        <!-- 配置hibernate的映射文件所在的位置 -->
+        <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.Enterprise"/>
+        <mapping resource="Enterprise.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceUser"/>
+        <mapping resource="InsuranceUser.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceContract"/>
+        <mapping resource="InsuranceContract.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.Keystore"/>
+        <mapping resource="Keystore.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.general.entity.pojo.TokenTransactionRecord"/>
+        <mapping resource="TokenTransactionRecord.hbm.xml"/>
+        <mapping class="cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceApplication"/>
+        <mapping resource="InsuranceApplication.hbm.xml"/>
+
+    </session-factory>
+</hibernate-configuration>

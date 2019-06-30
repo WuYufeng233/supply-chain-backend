@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="insurance">
+    <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>splcinsurance</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="insurance.war">
+      <element id="artifact" artifact-name="splcinsurance:war exploded" />
+    </root>
+  </artifact>
+</component>

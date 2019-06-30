@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 区块链配置 -->
+
+    <bean id="encryptType" class="org.fisco.bcos.web3j.crypto.EncryptType">
+        <constructor-arg value="0"/> <!-- 0:standard 1:guomi -->
+    </bean>
+
+    <bean id="groupChannelConnectionsConfig" class="org.fisco.bcos.channel.handler.GroupChannelConnectionsConfig">
+        <property name="allChannelConnections">
+            <list>
+                <bean id="group1" class="org.fisco.bcos.channel.handler.ChannelConnections">
+                    <property name="groupId" value="1"/>
+                    <property name="connectionsStr">
+                        <list>
+                            <value>127.0.0.1:20201</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="channelService" class="org.fisco.bcos.channel.client.Service" depends-on="groupChannelConnectionsConfig">
+        <property name="groupId" value="1"/>
+        <property name="orgID" value="fisco"/>
+        <property name="allChannelConnections" ref="groupChannelConnectionsConfig"/>
+    </bean>
+
+</beans>

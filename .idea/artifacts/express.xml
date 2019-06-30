@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="express">
+    <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>splcexpress</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="express.war">
+      <element id="artifact" artifact-name="splcexpress:war exploded" />
+    </root>
+  </artifact>
+</component>
