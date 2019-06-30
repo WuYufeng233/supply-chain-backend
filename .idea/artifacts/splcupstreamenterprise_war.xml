@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="splcupstreamenterprise:war">
+    <output-path>$PROJECT_DIR$/splc-upstream-enterprise/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>splcupstreamenterprise</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="splc-upstream-enterprise.war">
+      <element id="artifact" artifact-name="splcupstreamenterprise:war exploded" />
+    </root>
+  </artifact>
+</component>

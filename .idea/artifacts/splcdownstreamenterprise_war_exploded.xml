@@ -102,7 +102,6 @@
         <element id="file-copy" path="$PROJECT_DIR$/splc-downstream-enterprise/target/splc-downstream-enterprise/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="splcdownstreamenterprise/web/Web" />
-      <element id="dir-copy" path="$PROJECT_DIR$/splc-downstream-enterprise/res" />
     </root>
   </artifact>
 </component>
