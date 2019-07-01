@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
-  <artifact type="war" name="main">
-    <output-path>$PROJECT_DIR$/out/artifacts/main</output-path>
-    <root id="archive" name="main.war">
+  <artifact type="war" name="splc">
+    <output-path>$PROJECT_DIR$/out/artifacts/splc</output-path>
+    <root id="archive" name="splc.war">
       <element id="artifact" artifact-name="supply-chain-backend:war exploded" />
     </root>
   </artifact>
