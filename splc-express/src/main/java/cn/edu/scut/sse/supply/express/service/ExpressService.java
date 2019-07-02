@@ -95,7 +95,11 @@ public class ExpressService {
         ExpressUser user = new ExpressUser();
         user.setUsername(username);
         user.setPassword(password);
-        user.setToken(HashUtil.findToken(user));
+        String newToken = HashUtil.findToken(user);
+        while (expressUserDAO.getUserByToken(newToken) != null) {
+            newToken = HashUtil.findToken(user);
+        }
+        user.setToken(newToken);
         expressUserDAO.saveUser(user);
 
         result.setCode(0);
@@ -125,7 +129,11 @@ public class ExpressService {
             return result;
         }
         user.setPassword(newPassword);
-        user.setToken(HashUtil.findToken(user));
+        String newToken = HashUtil.findToken(user);
+        while (expressUserDAO.getUserByToken(newToken) != null) {
+            newToken = HashUtil.findToken(user);
+        }
+        user.setToken(newToken);
         expressUserDAO.updateUser(user);
         result.setCode(0);
         result.setMsg("修改密码成功");

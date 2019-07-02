@@ -22,7 +22,8 @@ public class HashUtil {
     public static String findToken(Object obj) {
         String token = obj.toString();
         SecureRandom random = new SecureRandom();
-        int randomInt = random.nextInt(Math.abs(obj.hashCode() % 0xFFFFFFFE));
+        int hashCode = obj.hashCode() == Integer.MIN_VALUE ? random.nextInt(Integer.MAX_VALUE) : obj.hashCode();
+        int randomInt = random.nextInt(Math.abs(hashCode));
         BigInteger i1 = BigInteger.valueOf(randomInt);
         BigInteger i2 = BigInteger.valueOf(obj.hashCode());
         BigInteger i3 = BigInteger.valueOf(System.currentTimeMillis());

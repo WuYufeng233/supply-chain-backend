@@ -95,7 +95,11 @@ public class InsuranceService {
         InsuranceUser user = new InsuranceUser();
         user.setUsername(username);
         user.setPassword(password);
-        user.setToken(HashUtil.findToken(user));
+        String newToken = HashUtil.findToken(user);
+        while (insuranceUserDAO.getUserByToken(newToken) != null) {
+            newToken = HashUtil.findToken(user);
+        }
+        user.setToken(newToken);
         insuranceUserDAO.saveUser(user);
 
         result.setCode(0);
@@ -125,7 +129,11 @@ public class InsuranceService {
             return result;
         }
         user.setPassword(newPassword);
-        user.setToken(HashUtil.findToken(user));
+        String newToken = HashUtil.findToken(user);
+        while (insuranceUserDAO.getUserByToken(newToken) != null) {
+            newToken = HashUtil.findToken(user);
+        }
+        user.setToken(newToken);
         insuranceUserDAO.updateUser(user);
         result.setCode(0);
         result.setMsg("修改密码成功");

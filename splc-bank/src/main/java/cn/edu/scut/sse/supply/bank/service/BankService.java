@@ -98,7 +98,11 @@ public class BankService {
         BankUser user = new BankUser();
         user.setUsername(username);
         user.setPassword(password);
-        user.setToken(HashUtil.findToken(user));
+        String newToken = HashUtil.findToken(user);
+        while (bankUserDAO.getUserByToken(newToken) != null) {
+            newToken = HashUtil.findToken(user);
+        }
+        user.setToken(newToken);
         bankUserDAO.saveUser(user);
 
         result.setCode(0);
@@ -128,7 +132,11 @@ public class BankService {
             return result;
         }
         user.setPassword(newPassword);
-        user.setToken(HashUtil.findToken(user));
+        String newToken = HashUtil.findToken(user);
+        while (bankUserDAO.getUserByToken(newToken) != null) {
+            newToken = HashUtil.findToken(user);
+        }
+        user.setToken(newToken);
         bankUserDAO.updateUser(user);
         result.setCode(0);
         result.setMsg("修改密码成功");

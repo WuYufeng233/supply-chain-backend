@@ -94,7 +94,11 @@ public class UpstreamEnterpriseService {
         UpstreamEnterpriseUser user = new UpstreamEnterpriseUser();
         user.setUsername(username);
         user.setPassword(password);
-        user.setToken(HashUtil.findToken(user));
+        String newToken = HashUtil.findToken(user);
+        while (upstreamEnterpriseUserDAO.getUserByToken(newToken) != null) {
+            newToken = HashUtil.findToken(user);
+        }
+        user.setToken(newToken);
         upstreamEnterpriseUserDAO.saveUser(user);
 
         result.setCode(0);
@@ -124,7 +128,11 @@ public class UpstreamEnterpriseService {
             return result;
         }
         user.setPassword(newPassword);
-        user.setToken(HashUtil.findToken(user));
+        String newToken = HashUtil.findToken(user);
+        while (upstreamEnterpriseUserDAO.getUserByToken(newToken) != null) {
+            newToken = HashUtil.findToken(user);
+        }
+        user.setToken(newToken);
         upstreamEnterpriseUserDAO.updateUser(user);
         result.setCode(0);
         result.setMsg("修改密码成功");
