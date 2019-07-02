@@ -8,6 +8,7 @@ import cn.edu.scut.sse.supply.express.entity.pojo.ExpressApplication;
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressContract;
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressUser;
 import cn.edu.scut.sse.supply.express.entity.vo.DetailExpressApplicationVO;
+import cn.edu.scut.sse.supply.express.entity.vo.ExpressApplicationStatusVO;
 import cn.edu.scut.sse.supply.express.entity.vo.ExpressApplicationVO;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
@@ -522,20 +523,21 @@ public class ExpressService {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
         }
         List<ExpressApplicationVO> vos = expressApplicationDAO.listExpressApplication(code).stream()
-                .map(ExpressApplicationVO::from)
-                .map(expressApplicationVO -> {
-                    DetailExpressApplicationVO detailVO;
+                .parallel()
+                .map(expressApplication -> {
+                    ExpressApplicationVO expressApplicationVO = ExpressApplicationVO.from(expressApplication);
+                    ExpressApplicationStatusVO statusVO;
                     try {
-                        detailVO = expressApplicationDAO.getExpressApplicationFromFisco(expressApplicationVO.getFid());
+                        statusVO = expressApplicationDAO.getExpressApplicationStatus(expressApplicationVO.getFid());
                     } catch (Exception e) {
                         e.printStackTrace();
                         expressApplicationVO.setStatus("未知状态");
                         return expressApplicationVO;
                     }
-                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                    if (statusVO.getReceiverSignature() == null || "".equals(statusVO.getReceiverSignature())) {
                         expressApplicationVO.setStatus("未接收");
                     } else {
-                        expressApplicationVO.setStatus(detailVO.getStatus());
+                        expressApplicationVO.setStatus(statusVO.getStatus());
                     }
                     return expressApplicationVO;
                 })
@@ -548,20 +550,21 @@ public class ExpressService {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
         List<ExpressApplicationVO> vos = expressApplicationDAO.listExpressApplication().stream()
-                .map(ExpressApplicationVO::from)
-                .map(expressApplicationVO -> {
-                    DetailExpressApplicationVO detailVO;
+                .parallel()
+                .map(expressApplication -> {
+                    ExpressApplicationVO expressApplicationVO = ExpressApplicationVO.from(expressApplication);
+                    ExpressApplicationStatusVO statusVO;
                     try {
-                        detailVO = expressApplicationDAO.getExpressApplicationFromFisco(expressApplicationVO.getFid());
+                        statusVO = expressApplicationDAO.getExpressApplicationStatus(expressApplicationVO.getFid());
                     } catch (Exception e) {
                         e.printStackTrace();
                         expressApplicationVO.setStatus("未知状态");
                         return expressApplicationVO;
                     }
-                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                    if (statusVO.getReceiverSignature() == null || "".equals(statusVO.getReceiverSignature())) {
                         expressApplicationVO.setStatus("未接收");
                     } else {
-                        expressApplicationVO.setStatus(detailVO.getStatus());
+                        expressApplicationVO.setStatus(statusVO.getStatus());
                     }
                     return expressApplicationVO;
                 })

@@ -1,6 +1,7 @@
 package cn.edu.scut.sse.supply.bank.dao;
 
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankApplication;
+import cn.edu.scut.sse.supply.bank.entity.vo.BankApplicationStatusVO;
 import cn.edu.scut.sse.supply.bank.entity.vo.DetailBankApplicationVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.util.ContractUtil;
@@ -145,6 +146,21 @@ public class BankApplicationDAO {
         vo.setReceiverSignature(response.receiverSignature);
         vo.setApplicationType(response.applicationType.intValue());
         vo.setStartTime(new Timestamp(response.startTime.longValue()));
+        vo.setStatus(response.status);
+        return vo;
+    }
+
+    public BankApplicationStatusVO getBankApplicationStatus(int fid) throws Exception {
+        Web3j web3j = Web3jUtil.getWeb3j();
+        cn.edu.scut.sse.supply.contracts.BankApplication bankApplicationContract = cn.edu.scut.sse.supply.contracts.BankApplication.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
+        TransactionReceipt receipt = bankApplicationContract.getApplicationStatus(BigInteger.valueOf(fid)).send();
+        List<cn.edu.scut.sse.supply.contracts.BankApplication.GetApplicationStatusCallbackEventResponse> responseList = bankApplicationContract.getGetApplicationStatusCallbackEvents(receipt);
+        if (responseList.size() == 0) {
+            return null;
+        }
+        cn.edu.scut.sse.supply.contracts.BankApplication.GetApplicationStatusCallbackEventResponse response = responseList.get(0);
+        BankApplicationStatusVO vo = new BankApplicationStatusVO();
+        vo.setReceiverSignature(response.receiverSignature);
         vo.setStatus(response.status);
         return vo;
     }

@@ -12,6 +12,7 @@ import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceApplication;
 import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceContract;
 import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceUser;
 import cn.edu.scut.sse.supply.insurance.entity.vo.DetailInsuranceApplicationVO;
+import cn.edu.scut.sse.supply.insurance.entity.vo.InsuranceApplicationStatusVO;
 import cn.edu.scut.sse.supply.insurance.entity.vo.InsuranceApplicationVO;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
@@ -522,20 +523,21 @@ public class InsuranceService {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
         }
         List<InsuranceApplicationVO> vos = insuranceApplicationDAO.listInsuranceApplication(code).stream()
-                .map(InsuranceApplicationVO::from)
-                .map(insuranceApplicationVO -> {
-                    DetailInsuranceApplicationVO detailVO;
+                .parallel()
+                .map(insuranceApplication -> {
+                    InsuranceApplicationVO insuranceApplicationVO = InsuranceApplicationVO.from(insuranceApplication);
+                    InsuranceApplicationStatusVO statusVO;
                     try {
-                        detailVO = insuranceApplicationDAO.getInsuranceApplicationFromFisco(insuranceApplicationVO.getFid());
+                        statusVO = insuranceApplicationDAO.getInsuranceApplicationStatus(insuranceApplicationVO.getFid());
                     } catch (Exception e) {
                         e.printStackTrace();
                         insuranceApplicationVO.setStatus("未知状态");
                         return insuranceApplicationVO;
                     }
-                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                    if (statusVO.getReceiverSignature() == null || "".equals(statusVO.getReceiverSignature())) {
                         insuranceApplicationVO.setStatus("未接收");
                     } else {
-                        insuranceApplicationVO.setStatus(detailVO.getStatus());
+                        insuranceApplicationVO.setStatus(statusVO.getStatus());
                     }
                     return insuranceApplicationVO;
                 })
@@ -548,20 +550,21 @@ public class InsuranceService {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
         List<InsuranceApplicationVO> vos = insuranceApplicationDAO.listInsuranceApplication().stream()
-                .map(InsuranceApplicationVO::from)
-                .map(insuranceApplicationVO -> {
-                    DetailInsuranceApplicationVO detailVO;
+                .parallel()
+                .map(insuranceApplication -> {
+                    InsuranceApplicationVO insuranceApplicationVO = InsuranceApplicationVO.from(insuranceApplication);
+                    InsuranceApplicationStatusVO statusVO;
                     try {
-                        detailVO = insuranceApplicationDAO.getInsuranceApplicationFromFisco(insuranceApplicationVO.getFid());
+                        statusVO = insuranceApplicationDAO.getInsuranceApplicationStatus(insuranceApplicationVO.getFid());
                     } catch (Exception e) {
                         e.printStackTrace();
                         insuranceApplicationVO.setStatus("未知状态");
                         return insuranceApplicationVO;
                     }
-                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                    if (statusVO.getReceiverSignature() == null || "".equals(statusVO.getReceiverSignature())) {
                         insuranceApplicationVO.setStatus("未接收");
                     } else {
-                        insuranceApplicationVO.setStatus(detailVO.getStatus());
+                        insuranceApplicationVO.setStatus(statusVO.getStatus());
                     }
                     return insuranceApplicationVO;
                 })

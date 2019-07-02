@@ -7,10 +7,7 @@ import cn.edu.scut.sse.supply.bank.dao.BankUserDAO;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankApplication;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankContract;
 import cn.edu.scut.sse.supply.bank.entity.pojo.BankUser;
-import cn.edu.scut.sse.supply.bank.entity.vo.BankApplicationVO;
-import cn.edu.scut.sse.supply.bank.entity.vo.DetailBankApplicationVO;
-import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseCreditVO;
-import cn.edu.scut.sse.supply.bank.entity.vo.EnterpriseTokenVO;
+import cn.edu.scut.sse.supply.bank.entity.vo.*;
 import cn.edu.scut.sse.supply.general.dao.EnterpriseDAO;
 import cn.edu.scut.sse.supply.general.dao.KeystoreDAO;
 import cn.edu.scut.sse.supply.general.entity.pojo.Enterprise;
@@ -841,20 +838,21 @@ public class BankService {
             return new ResponseResult().setCode(-4).setMsg("不合法的企业代码");
         }
         List<BankApplicationVO> vos = bankApplicationDAO.listBankApplication(code).stream()
-                .map(BankApplicationVO::from)
-                .map(bankApplicationVO -> {
-                    DetailBankApplicationVO detailVO;
+                .parallel()
+                .map(bankApplication -> {
+                    BankApplicationVO bankApplicationVO = BankApplicationVO.from(bankApplication);
+                    BankApplicationStatusVO statusVO;
                     try {
-                        detailVO = bankApplicationDAO.getBankApplicationFromFisco(bankApplicationVO.getFid());
+                        statusVO = bankApplicationDAO.getBankApplicationStatus(bankApplicationVO.getFid());
                     } catch (Exception e) {
                         e.printStackTrace();
                         bankApplicationVO.setStatus("未知状态");
                         return bankApplicationVO;
                     }
-                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                    if (statusVO.getReceiverSignature() == null || "".equals(statusVO.getReceiverSignature())) {
                         bankApplicationVO.setStatus("未接收");
                     } else {
-                        bankApplicationVO.setStatus(detailVO.getStatus());
+                        bankApplicationVO.setStatus(statusVO.getStatus());
                     }
                     return bankApplicationVO;
                 })
@@ -873,20 +871,21 @@ public class BankService {
             return new ResponseResult().setCode(-1).setMsg("用户状态已改变");
         }
         List<BankApplicationVO> vos = bankApplicationDAO.listBankApplication().stream()
-                .map(BankApplicationVO::from)
-                .map(bankApplicationVO -> {
-                    DetailBankApplicationVO detailVO;
+                .parallel()
+                .map(bankApplication -> {
+                    BankApplicationVO bankApplicationVO = BankApplicationVO.from(bankApplication);
+                    BankApplicationStatusVO statusVO;
                     try {
-                        detailVO = bankApplicationDAO.getBankApplicationFromFisco(bankApplicationVO.getFid());
+                        statusVO = bankApplicationDAO.getBankApplicationStatus(bankApplicationVO.getFid());
                     } catch (Exception e) {
                         e.printStackTrace();
                         bankApplicationVO.setStatus("未知状态");
                         return bankApplicationVO;
                     }
-                    if (detailVO.getReceiverSignature() == null || "".equals(detailVO.getReceiverSignature())) {
+                    if (statusVO.getReceiverSignature() == null || "".equals(statusVO.getReceiverSignature())) {
                         bankApplicationVO.setStatus("未接收");
                     } else {
-                        bankApplicationVO.setStatus(detailVO.getStatus());
+                        bankApplicationVO.setStatus(statusVO.getStatus());
                     }
                     return bankApplicationVO;
                 })

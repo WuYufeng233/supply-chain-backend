@@ -3,6 +3,7 @@ package cn.edu.scut.sse.supply.insurance.dao;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.insurance.entity.pojo.InsuranceApplication;
 import cn.edu.scut.sse.supply.insurance.entity.vo.DetailInsuranceApplicationVO;
+import cn.edu.scut.sse.supply.insurance.entity.vo.InsuranceApplicationStatusVO;
 import cn.edu.scut.sse.supply.util.ContractUtil;
 import cn.edu.scut.sse.supply.util.SessionFactoryUtil;
 import cn.edu.scut.sse.supply.util.Web3jUtil;
@@ -145,6 +146,21 @@ public class InsuranceApplicationDAO {
         vo.setReceiverSignature(response.receiverSignature);
         vo.setApplicationType(response.applicationType.intValue());
         vo.setStartTime(new Timestamp(response.startTime.longValue()));
+        vo.setStatus(response.status);
+        return vo;
+    }
+
+    public InsuranceApplicationStatusVO getInsuranceApplicationStatus(int fid) throws Exception {
+        Web3j web3j = Web3jUtil.getWeb3j();
+        cn.edu.scut.sse.supply.contracts.InsuranceApplication insuranceApplicationContract = cn.edu.scut.sse.supply.contracts.InsuranceApplication.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
+        TransactionReceipt receipt = insuranceApplicationContract.getApplicationStatus(BigInteger.valueOf(fid)).send();
+        List<cn.edu.scut.sse.supply.contracts.InsuranceApplication.GetApplicationStatusCallbackEventResponse> responseList = insuranceApplicationContract.getGetApplicationStatusCallbackEvents(receipt);
+        if (responseList.size() == 0) {
+            return null;
+        }
+        cn.edu.scut.sse.supply.contracts.InsuranceApplication.GetApplicationStatusCallbackEventResponse response = responseList.get(0);
+        InsuranceApplicationStatusVO vo = new InsuranceApplicationStatusVO();
+        vo.setReceiverSignature(response.receiverSignature);
         vo.setStatus(response.status);
         return vo;
     }

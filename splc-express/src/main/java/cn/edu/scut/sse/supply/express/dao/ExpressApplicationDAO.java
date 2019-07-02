@@ -2,6 +2,7 @@ package cn.edu.scut.sse.supply.express.dao;
 
 import cn.edu.scut.sse.supply.express.entity.pojo.ExpressApplication;
 import cn.edu.scut.sse.supply.express.entity.vo.DetailExpressApplicationVO;
+import cn.edu.scut.sse.supply.express.entity.vo.ExpressApplicationStatusVO;
 import cn.edu.scut.sse.supply.general.entity.vo.ResponseResult;
 import cn.edu.scut.sse.supply.util.ContractUtil;
 import cn.edu.scut.sse.supply.util.SessionFactoryUtil;
@@ -145,6 +146,21 @@ public class ExpressApplicationDAO {
         vo.setReceiverSignature(response.receiverSignature);
         vo.setApplicationType(response.applicationType.intValue());
         vo.setStartTime(new Timestamp(response.startTime.longValue()));
+        vo.setStatus(response.status);
+        return vo;
+    }
+
+    public ExpressApplicationStatusVO getExpressApplicationStatus(int fid) throws Exception {
+        Web3j web3j = Web3jUtil.getWeb3j();
+        cn.edu.scut.sse.supply.contracts.ExpressApplication expressApplicationContract = cn.edu.scut.sse.supply.contracts.ExpressApplication.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
+        TransactionReceipt receipt = expressApplicationContract.getApplicationStatus(BigInteger.valueOf(fid)).send();
+        List<cn.edu.scut.sse.supply.contracts.ExpressApplication.GetApplicationStatusCallbackEventResponse> responseList = expressApplicationContract.getGetApplicationStatusCallbackEvents(receipt);
+        if (responseList.size() == 0) {
+            return null;
+        }
+        cn.edu.scut.sse.supply.contracts.ExpressApplication.GetApplicationStatusCallbackEventResponse response = responseList.get(0);
+        ExpressApplicationStatusVO vo = new ExpressApplicationStatusVO();
+        vo.setReceiverSignature(response.receiverSignature);
         vo.setStatus(response.status);
         return vo;
     }
