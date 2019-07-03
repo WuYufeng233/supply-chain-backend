@@ -83,7 +83,6 @@ public class BankController {
         if (contract == null) {
             return new ResponseResult().setCode(-1).setMsg("文件为空");
         }
-        logger.info("Contract upload, token = {}, contract size = {}", token, contract.getSize());
         return bankService.contractUpload(token, contract.getBytes());
     }
 
@@ -104,14 +103,12 @@ public class BankController {
     @RequestMapping("/contract/list")
     public @ResponseBody
     ResponseResult listContract(@RequestHeader("authorization") String token) {
-        logger.info("List contract, token = {}", token);
         return bankService.listContract(token);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/contract/detail")
     public @ResponseBody
     ResponseResult getContract(@RequestHeader("authorization") String token, @RequestParam int fid) {
-        logger.info("Get contract, token = {}, fid = {}", token, fid);
         return bankService.getContract(token, fid);
     }
 
@@ -132,7 +129,6 @@ public class BankController {
     @RequestMapping(method = RequestMethod.POST, value = "/token/get-credit")
     public @ResponseBody
     ResponseResult getEnterpriseCredit(@RequestHeader("authorization") String token, @RequestParam(required = false) Integer code) {
-        logger.info("Get credit, token = {}, code = {}", token, code);
         if (code == null) {
             return bankService.getEnterpriseCredit(token, ENTERPRISE_CODE);
         } else {
@@ -143,7 +139,6 @@ public class BankController {
     @RequestMapping("/token/list-credit")
     public @ResponseBody
     ResponseResult listEnterpriseCredit(@RequestHeader("authorization") String token) {
-        logger.info("List credit, token = {}", token);
         return bankService.listEnterpriseCredit(token);
     }
 
@@ -157,14 +152,13 @@ public class BankController {
     @RequestMapping(method = RequestMethod.POST, value = "/token/sub")
     public @ResponseBody
     ResponseResult subEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val, @RequestParam(required = false) Integer type, @RequestParam(required = false) Integer id) {
-        logger.info("Add token, token = {}, code = {}, val = {}, type = {}, id = {}", token, code, val, type, id);
+        logger.info("Sub token, token = {}, code = {}, val = {}, type = {}, id = {}", token, code, val, type, id);
         return bankService.subEnterpriseToken(token, code, val, type, id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/token/get")
     public @ResponseBody
     ResponseResult getEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam(required = false) Integer code) {
-        logger.info("Get token, token = {}, code = {}", token, code);
         if (code == null) {
             return bankService.getEnterpriseToken(token, ENTERPRISE_CODE);
         } else {
@@ -175,7 +169,6 @@ public class BankController {
     @RequestMapping("/token/list")
     public @ResponseBody
     ResponseResult listEnterpriseToken(@RequestHeader("authorization") String token) {
-        logger.info("List token, token = {}", token);
         return bankService.listEnterpriseToken(token);
     }
 
@@ -189,7 +182,6 @@ public class BankController {
     @RequestMapping("/token/list-transaction")
     public @ResponseBody
     ResponseResult listTokenTransaction(@RequestHeader("authorization") String token) {
-        logger.info("List transaction, token = {}", token);
         return bankService.listTokenTransaction(token);
     }
 
