@@ -144,16 +144,16 @@ public class BankController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/token/add")
     public @ResponseBody
-    ResponseResult addEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val, @RequestParam(required = false) Integer type, @RequestParam(required = false) Integer id) {
-        logger.info("Add token, token = {}, code = {}, val = {}, type = {}, id = {}", token, code, val, type, id);
-        return bankService.addEnterpriseToken(token, code, val, type, id);
+    ResponseResult addEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val, @RequestParam(required = false) Integer type, @RequestParam(required = false) Integer fid) {
+        logger.info("Add token, token = {}, code = {}, val = {}, type = {}, fid = {}", token, code, val, type, fid);
+        return bankService.addEnterpriseToken(token, code, val, type, fid);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/token/sub")
     public @ResponseBody
-    ResponseResult subEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val, @RequestParam(required = false) Integer type, @RequestParam(required = false) Integer id) {
-        logger.info("Sub token, token = {}, code = {}, val = {}, type = {}, id = {}", token, code, val, type, id);
-        return bankService.subEnterpriseToken(token, code, val, type, id);
+    ResponseResult subEnterpriseToken(@RequestHeader("authorization") String token, @RequestParam int code, @RequestParam BigInteger val, @RequestParam(required = false) Integer type, @RequestParam(required = false) Integer fid) {
+        logger.info("Sub token, token = {}, code = {}, val = {}, type = {}, fid = {}", token, code, val, type, fid);
+        return bankService.subEnterpriseToken(token, code, val, type, fid);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/token/get")
