@@ -10,9 +10,10 @@
         <module name="splcinsurance" />
         <module name="splcbank" />
         <module name="SupplyChainBackEnd" />
-        <module name="splcexpress" />
-        <module name="splccoreenterprise" />
         <module name="splcdownstreamenterprise" />
+        <module name="splccoreenterprise" />
+        <module name="splcgeneral" />
+        <module name="splcexpress" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
@@ -20,6 +21,7 @@
       <module name="splccoreenterprise" target="1.8" />
       <module name="splcdownstreamenterprise" target="1.8" />
       <module name="splcexpress" target="1.8" />
+      <module name="splcgeneral" target="1.8" />
       <module name="splcinsurance" target="1.8" />
       <module name="splcupstreamenterprise" target="1.8" />
       <module name="supply-chain-backend" target="1.8" />

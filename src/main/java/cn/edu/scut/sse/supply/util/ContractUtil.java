@@ -10,6 +10,6 @@ package cn.edu.scut.sse.supply.util;
 
 public class ContractUtil {
 
-    public static final String ENTERPRISE_TOKEN_ADDRESS = "0x0b9ce0c6c4a85816bb328815d6befd7aa56119e8";
+    public static final String ENTERPRISE_TOKEN_ADDRESS = "0x57d1a099b2bdda8b1baf53b4a72038af389b9a62";
 
 }

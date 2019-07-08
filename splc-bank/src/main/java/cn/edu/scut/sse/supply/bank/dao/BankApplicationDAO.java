@@ -10,6 +10,7 @@ import cn.edu.scut.sse.supply.util.Web3jUtil;
 import org.fisco.bcos.web3j.crypto.Credentials;
 import org.fisco.bcos.web3j.protocol.Web3j;
 import org.fisco.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.fisco.bcos.web3j.tuples.generated.Tuple2;
 import org.fisco.bcos.web3j.tx.gas.StaticGasProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -153,15 +154,10 @@ public class BankApplicationDAO {
     public BankApplicationStatusVO getBankApplicationStatus(int fid) throws Exception {
         Web3j web3j = Web3jUtil.getWeb3j();
         cn.edu.scut.sse.supply.contracts.BankApplication bankApplicationContract = cn.edu.scut.sse.supply.contracts.BankApplication.load(address, web3j, credentials, new StaticGasProvider(gasPrice, gasLimit));
-        TransactionReceipt receipt = bankApplicationContract.getApplicationStatus(BigInteger.valueOf(fid)).send();
-        List<cn.edu.scut.sse.supply.contracts.BankApplication.GetApplicationStatusCallbackEventResponse> responseList = bankApplicationContract.getGetApplicationStatusCallbackEvents(receipt);
-        if (responseList.size() == 0) {
-            return null;
-        }
-        cn.edu.scut.sse.supply.contracts.BankApplication.GetApplicationStatusCallbackEventResponse response = responseList.get(0);
+        Tuple2<String, String> tuple2 = bankApplicationContract.getApplicationStatus(BigInteger.valueOf(fid)).send();
         BankApplicationStatusVO vo = new BankApplicationStatusVO();
-        vo.setReceiverSignature(response.receiverSignature);
-        vo.setStatus(response.status);
+        vo.setReceiverSignature(tuple2.getValue1());
+        vo.setStatus(tuple2.getValue2());
         return vo;
     }
 

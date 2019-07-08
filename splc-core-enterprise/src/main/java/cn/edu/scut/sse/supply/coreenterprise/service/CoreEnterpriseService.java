@@ -16,6 +16,8 @@ import cn.edu.scut.sse.supply.general.entity.vo.*;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import cn.edu.scut.sse.supply.util.SignVerifyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
 @Service
 public class CoreEnterpriseService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CoreEnterpriseService.class);
+    
     private static final int ENTERPRISE_CODE = 4001;
     private static final String PRIVATE_KEY_PATH = "../webapps/core-enterprise/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private CoreEnterpriseUserDAO coreEnterpriseUserDAO;
@@ -192,7 +196,7 @@ public class CoreEnterpriseService {
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (privateKey == null || "".equals(privateKey)) {
@@ -202,7 +206,7 @@ public class CoreEnterpriseService {
         try {
             return coreEnterpriseContractDAO.saveContractToFisco(contract, signature);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
@@ -215,7 +219,7 @@ public class CoreEnterpriseService {
         try {
             detailContract = coreEnterpriseContractDAO.getContractFromFisco(fid);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (Integer.parseInt(detailContract.getSponsor()) != ENTERPRISE_CODE && Integer.parseInt(detailContract.getReceiver()) != ENTERPRISE_CODE) {
@@ -235,7 +239,7 @@ public class CoreEnterpriseService {
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (privateKey == null || "".equals(privateKey)) {
@@ -246,7 +250,7 @@ public class CoreEnterpriseService {
         try {
             return coreEnterpriseContractDAO.receiveContractToFisco(fid, ENTERPRISE_CODE, signature);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
@@ -290,7 +294,7 @@ public class CoreEnterpriseService {
         try {
             vo = coreEnterpriseContractDAO.getContractFromFisco(fid);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         int sponsorCode = Integer.parseInt(vo.getSponsor());
@@ -304,7 +308,7 @@ public class CoreEnterpriseService {
                     vo.setSponsorVerify(-1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 vo.setSponsorVerify(0);
             }
         } else {
@@ -319,7 +323,7 @@ public class CoreEnterpriseService {
                     vo.setReceiverVerify(-1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 vo.setReceiverVerify(0);
             }
         } else {
@@ -347,7 +351,7 @@ public class CoreEnterpriseService {
         try {
             return coreEnterpriseContractDAO.updateContractStatusToFisco(ENTERPRISE_CODE, fid, status);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部错误");
         }
     }
@@ -359,7 +363,7 @@ public class CoreEnterpriseService {
         try {
             return coreEnterpriseTokenDAO.getEnterpriseCredit(ENTERPRISE_CODE);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
@@ -371,7 +375,7 @@ public class CoreEnterpriseService {
         try {
             return coreEnterpriseTokenDAO.getEnterpriseToken(ENTERPRISE_CODE);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
@@ -387,7 +391,7 @@ public class CoreEnterpriseService {
         try {
             result = coreEnterpriseTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (result.getCode() != 0) {
@@ -418,7 +422,7 @@ public class CoreEnterpriseService {
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (privateKey == null || "".equals(privateKey)) {
@@ -454,7 +458,7 @@ public class CoreEnterpriseService {
         try {
             return coreEnterpriseCargoDAO.saveCargoToFisco(cargoReceive.getId(), content, consignor, contractId, insuranceId, expressId);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("服务器内部状态错误");
         }
     }
@@ -474,7 +478,7 @@ public class CoreEnterpriseService {
         try {
             cargoVO = coreEnterpriseCargoDAO.getCargoFromFisco(id);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("服务器内部状态错误");
         }
         CargoResponseVO vo = CargoResponseVO.from(cargoVO);

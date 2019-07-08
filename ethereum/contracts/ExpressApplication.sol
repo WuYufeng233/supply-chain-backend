@@ -20,7 +20,6 @@ contract ExpressApplication {
     event receiveApplicationEvent(int code, string msg);
     event updateApplicationStatusEvent(int code, string msg);
     event getApplicationCallback(string content, uint sponsor, uint receiver, string sponsorSignature, string receiverSignature, int applicationType, uint startTime, string status);
-    event getApplicationStatusCallback(string receiverSignature, string status);
 
     function createApplication(int id, string content, uint sponsor, uint receiver, string sponsorSignature, int applicationType) public {
         if (applications[id].startTime != 0) {
@@ -59,8 +58,8 @@ contract ExpressApplication {
         emit getApplicationCallback(application.content, application.sponsor, application.receiver, application.sponsorSignature, application.receiverSignature, application.applicationType, application.startTime, application.status);
     }
 
-    function getApplicationStatus(int id) public {
-        emit getApplicationStatusCallback(applications[id].receiverSignature, applications[id].status);
+    function getApplicationStatus(int id) constant public returns (string, string) {
+        return (applications[id].receiverSignature, applications[id].status);
     }
 
 }

@@ -1,8 +1,8 @@
 <component name="ArtifactManager">
   <artifact type="war" name="splc">
-    <output-path>$PROJECT_DIR$/out/artifacts/splc</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts</output-path>
     <root id="archive" name="splc.war">
-      <element id="artifact" artifact-name="supply-chain-backend:war exploded" />
+      <element id="artifact" artifact-name="splcgeneral:war exploded" />
     </root>
   </artifact>
 </component>

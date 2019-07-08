@@ -10,8 +10,8 @@ package cn.edu.scut.sse.supply.util;
 
 public class ContractUtil {
 
-    public static final String CONTRACT_REPO_ADDRESS = "0x8c17cf316c1063ab6c89df875e96c9f0f5b2f744";
-    public static final String ENTERPRISE_TOKEN_ADDRESS = "0x0b9ce0c6c4a85816bb328815d6befd7aa56119e8";
-    public static final String INSURANCE_APPLICATION_ADDRESS = "0x51892f7b2e1e341aa1fff52246f9f6cbc547c7ab";
+    public static final String CONTRACT_REPO_ADDRESS = "0x228682b948fe0d2642e757faaef2608cba74e40f";
+    public static final String ENTERPRISE_TOKEN_ADDRESS = "0x57d1a099b2bdda8b1baf53b4a72038af389b9a62";
+    public static final String INSURANCE_APPLICATION_ADDRESS = "0x4fcfb44594502b49147a575ed25e33c7ce4a9a50";
 
 }

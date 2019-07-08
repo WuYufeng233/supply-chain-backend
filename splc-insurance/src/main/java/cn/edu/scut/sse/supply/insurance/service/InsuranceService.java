@@ -17,6 +17,8 @@ import cn.edu.scut.sse.supply.insurance.entity.vo.InsuranceApplicationVO;
 import cn.edu.scut.sse.supply.util.EnterpriseUtil;
 import cn.edu.scut.sse.supply.util.HashUtil;
 import cn.edu.scut.sse.supply.util.SignVerifyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 @Service
 public class InsuranceService {
 
+    private static final Logger logger = LoggerFactory.getLogger(InsuranceService.class);
+    
     private static final int ENTERPRISE_CODE = 3001;
     private static final String PRIVATE_KEY_PATH = "../webapps/insurance/WEB-INF/classes/private_key_" + ENTERPRISE_CODE;
     private InsuranceUserDAO insuranceUserDAO;
@@ -193,7 +197,7 @@ public class InsuranceService {
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (privateKey == null || "".equals(privateKey)) {
@@ -203,7 +207,7 @@ public class InsuranceService {
         try {
             return insuranceContractDAO.saveContractToFisco(contract, signature);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
@@ -216,7 +220,7 @@ public class InsuranceService {
         try {
             detailContract = insuranceContractDAO.getContractFromFisco(fid);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (Integer.parseInt(detailContract.getSponsor()) != ENTERPRISE_CODE && Integer.parseInt(detailContract.getReceiver()) != ENTERPRISE_CODE) {
@@ -236,7 +240,7 @@ public class InsuranceService {
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (privateKey == null || "".equals(privateKey)) {
@@ -247,7 +251,7 @@ public class InsuranceService {
         try {
             return insuranceContractDAO.receiveContractToFisco(fid, ENTERPRISE_CODE, signature);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
@@ -291,7 +295,7 @@ public class InsuranceService {
         try {
             vo = insuranceContractDAO.getContractFromFisco(fid);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         int sponsorCode = Integer.parseInt(vo.getSponsor());
@@ -305,7 +309,7 @@ public class InsuranceService {
                     vo.setSponsorVerify(-1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 vo.setSponsorVerify(0);
             }
         } else {
@@ -320,7 +324,7 @@ public class InsuranceService {
                     vo.setReceiverVerify(-1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 vo.setReceiverVerify(0);
             }
         } else {
@@ -348,7 +352,7 @@ public class InsuranceService {
         try {
             return insuranceContractDAO.updateContractStatusToFisco(ENTERPRISE_CODE, fid, status);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部错误");
         }
     }
@@ -360,7 +364,7 @@ public class InsuranceService {
         try {
             return insuranceTokenDAO.getEnterpriseCredit(ENTERPRISE_CODE);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
@@ -372,7 +376,7 @@ public class InsuranceService {
         try {
             return insuranceTokenDAO.getEnterpriseToken(ENTERPRISE_CODE);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
     }
@@ -388,7 +392,7 @@ public class InsuranceService {
         try {
             result = insuranceTokenDAO.payEnterpriseToken(ENTERPRISE_CODE, code, val);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (result.getCode() != 0) {
@@ -419,7 +423,7 @@ public class InsuranceService {
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("内部状态错误");
         }
         if (privateKey == null || "".equals(privateKey)) {
@@ -443,7 +447,7 @@ public class InsuranceService {
         try {
             return insuranceApplicationDAO.saveInsuranceApplicationToFisco(fid, content, code, ENTERPRISE_CODE, signature, type).setData(fid);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
         }
     }
@@ -457,7 +461,7 @@ public class InsuranceService {
         try {
             privateKey = keystoreDAO.getPrivateKeyFromStorage(PRIVATE_KEY_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("服务器内部错误，未获得密钥");
         }
         String content = application.getContent().concat(String.valueOf(application.getType()));
@@ -465,7 +469,7 @@ public class InsuranceService {
         try {
             return insuranceApplicationDAO.receiveInsuranceApplicationToFisco(fid, signature);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
         }
     }
@@ -477,7 +481,7 @@ public class InsuranceService {
         try {
             return insuranceApplicationDAO.updateInsuranceApplicationStatusToFisco(fid, status);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
         }
     }
@@ -487,7 +491,7 @@ public class InsuranceService {
         try {
             vo = insuranceApplicationDAO.getInsuranceApplicationFromFisco(fid);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return new ResponseResult().setCode(-11).setMsg("服务器内部错误");
         }
         String content = vo.getContent().concat(String.valueOf(vo.getApplicationType()));
@@ -504,7 +508,7 @@ public class InsuranceService {
                     vo.setSponsorVerify(-1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 vo.setSponsorVerify(0);
             }
         }
@@ -519,7 +523,7 @@ public class InsuranceService {
                     vo.setReceiverVerify(-1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
                 vo.setReceiverVerify(0);
             }
         }
@@ -538,7 +542,7 @@ public class InsuranceService {
                     try {
                         statusVO = insuranceApplicationDAO.getInsuranceApplicationStatus(insuranceApplicationVO.getFid());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                         insuranceApplicationVO.setStatus("未知状态");
                         return insuranceApplicationVO;
                     }
@@ -565,7 +569,7 @@ public class InsuranceService {
                     try {
                         statusVO = insuranceApplicationDAO.getInsuranceApplicationStatus(insuranceApplicationVO.getFid());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                         insuranceApplicationVO.setStatus("未知状态");
                         return insuranceApplicationVO;
                     }
